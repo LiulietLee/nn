@@ -46,8 +46,10 @@ int pop(stack *stk) {
 
 ```cpp
 bool isMatch(const char *bracketSequence, int sequenceLength) {
+  stack stk;
+  stk.top = 0;
   // 请完成这个函数
-  
+
 }
 ```
 
