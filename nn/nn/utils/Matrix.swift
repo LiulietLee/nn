@@ -97,3 +97,29 @@ public func += (lhs: inout Matrix, rhs: Matrix) {
         }
     }
 }
+
+public func * (lhs: Matrix, rhs: [Float]) -> [Float] {
+    let row = lhs.row
+    let col = lhs.col
+    var output = Array.init(repeating: Float(0.0), count: row)
+    for i in 0 ..< row {
+        for j in 0 ..< col {
+            output[i] += lhs[i, j] * rhs[j]
+        }
+    }
+    return output
+}
+
+public func + (lhs: [Float], rhs: [Float]) -> [Float] {
+    var output = Array.init(repeating: Float(0.0), count: lhs.count)
+    for i in 0 ..< lhs.count {
+        output[i] = lhs[i] + rhs[i]
+    }
+    return output
+}
+
+public func += (lhs: inout [Float], rhs: [Float]) {
+    for i in 0 ..< lhs.count {
+        lhs[i] += rhs[i]
+    }
+}

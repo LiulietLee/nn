@@ -11,7 +11,7 @@ import Foundation
 public class ReLU: Layer {
     public var score: [Float] = []
     
-    public func backward(_ node: [Float], derivative: [Float], lr: Float = 0.1) -> [Float] {
+    public func backward(_ node: [Float], derivative: [Float], rate: Float = 0.1) -> [Float] {
         return zip(node, derivative).map {
             return $0.0 >= 0.0 ? $0.1 : 0.0
         }

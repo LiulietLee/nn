@@ -11,5 +11,5 @@ import Foundation
 public protocol Layer {
     var score: [Float] { get set }
     func forward(_ input: [Float]) -> [Float]
-    func backward(_ node: [Float], derivative: [Float], lr: Float) -> [Float]
+    func backward(_ node: [Float], derivative: [Float], rate: Float) -> [Float]
 }

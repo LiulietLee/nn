@@ -12,8 +12,7 @@ let net = Sequential()
 
 net.add([
     Dense(inFeatures: 5, outFeatures: 3),
-    Dense(inFeatures: 3, outFeatures: 2),
-    ReLU()
+    Dense(inFeatures: 3, outFeatures: 2)
 ])
 
 for i in 0..<20 {
@@ -21,7 +20,7 @@ for i in 0..<20 {
     let label: [Float] = [1, 0]
     let score = net.forward(img)
     let loss = Loss.mod2(score: score, label: img)
-    net.backward(label, lr: 0.02)
+    net.backward(label, rate: 0.1)
 
     print("epoch \(i): loss: \(loss), score: \(score)")
 }

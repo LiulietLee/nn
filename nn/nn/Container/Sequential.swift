@@ -31,13 +31,13 @@ public class Sequential: Container {
         return score
     }
     
-    public func backward(_ label: [Float], lr: Float = 0.1) {
+    public func backward(_ label: [Float], rate: Float = 0.1) {
         var r = zip(label, score).map { return -2.0 * ($0.0 - $0.1) }
         for i in (0..<layers.count).reversed() {
             if i == 0 {
-                r = layers[i].backward(input, derivative: r, lr: lr)
+                r = layers[i].backward(input, derivative: r, rate: rate)
             } else {
-                r = layers[i].backward(layers[i - 1].score, derivative: r, lr: lr)
+                r = layers[i].backward(layers[i - 1].score, derivative: r, rate: rate)
             }
         }
     }
