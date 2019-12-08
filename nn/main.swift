@@ -19,7 +19,7 @@ for i in 0..<20 {
     let img: [Float] = [1, 0, 0, 0, 0]
     let label: [Float] = [1, 0]
     let score = net.forward(img)
-    let loss = Loss.mod2(score: score, label: img)
+    let loss = net.loss(label)
     net.backward(label, rate: 0.1)
 
     print("epoch \(i): loss: \(loss), score: \(score)")

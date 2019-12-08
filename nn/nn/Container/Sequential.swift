@@ -13,6 +13,8 @@ public class Sequential: Container {
     private var score = [Float]()
     private var input = [Float]()
     
+    public var lossClass = Loss.mod2.self
+    
     public func add(_ layer: Layer) {
         layers.append(layer)
     }
@@ -31,8 +33,10 @@ public class Sequential: Container {
         return score
     }
     
-    public func backward(_ label: [Float], rate: Float = 0.1) {
-        var r = zip(label, score).map { return -2.0 * ($0.0 - $0.1) }
+    public func backward(_ label: [Float], rate: Float = 0.1, derivative: [Float] = []) {
+        var r = derivative.isEmpty
+            ? lossClass.derivative(score: score, label: label)
+            : derivative
         for i in (0..<layers.count).reversed() {
             if i == 0 {
                 r = layers[i].backward(input, derivative: r, rate: rate)
@@ -40,5 +44,9 @@ public class Sequential: Container {
                 r = layers[i].backward(layers[i - 1].score, derivative: r, rate: rate)
             }
         }
+    }
+    
+    public func loss(_ label: [Float]) -> Float {
+        return lossClass.loss(score: score, label: label)
     }
 }

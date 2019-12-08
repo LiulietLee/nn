@@ -10,5 +10,6 @@ import Foundation
 
 public protocol Container {
     func forward(_ input: [Float]) -> [Float]
-    func backward(_ label: [Float], rate: Float)
+    func backward(_ label: [Float], rate: Float, derivative: [Float])
+    func loss(_ label: [Float]) -> Float
 }
