@@ -25,12 +25,11 @@ public class Dense: Layer {
         self.relu = relu
         
         self.bias = Array.init(
-            repeating: needBias ? Float.random(in: -1.0 ..< 1.0) : Float(0.0),
+            repeating: needBias ? 0.1 : Float(0.0),
             count: outFeatures
         )
         
-        param = Matrix(row: outFeatures, col: inFeatures)
-        param.rand()
+        param = Matrix(row: outFeatures, col: inFeatures).rand()
     }
     
     public func forward(_ input: [Float]) -> [Float] {

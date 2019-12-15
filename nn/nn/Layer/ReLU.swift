@@ -19,7 +19,7 @@ public class ReLU: Layer {
     
     public func forward(_ input: [Float]) -> [Float] {
         score = input
-        for i in 0 ..< input.count {
+        for i in 0..<input.count {
             score[i] = max(0, input[i])
         }
         return score

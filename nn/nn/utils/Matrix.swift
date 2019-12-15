@@ -33,20 +33,24 @@ public class Matrix {
         return Matrix(_data)
     }
     
-    public func rand() {
-        for i in 0 ..< row {
-            for j in 0 ..< col {
+    @discardableResult
+    public func rand() -> Matrix {
+        for i in 0..<row {
+            for j in 0..<col {
                 _data[i][j] = Float.random(in: -1.0..<1.0)
             }
         }
+        return self
     }
     
-    public func ones() {
-        for i in 0 ..< row {
-            for j in 0 ..< col {
+    @discardableResult
+    public func ones() -> Matrix {
+        for i in 0..<row {
+            for j in 0..<col {
                 _data[i][j] = 1.0
             }
         }
+        return self
     }
     
     public subscript(index1: Int, index2: Int) -> Float {
@@ -62,9 +66,9 @@ public class Matrix {
 public func * (lhs: Matrix, rhs: Matrix) -> Matrix {
     let row = lhs.row, col = rhs.col, len = lhs.col
     let out = Matrix(row: row, col: col)
-    for i in 0 ..< row {
-        for j in 0 ..< col {
-            for k in 0 ..< len {
+    for i in 0..<row {
+        for j in 0..<col {
+            for k in 0..<len {
                 out[i, j] += lhs[i, k] * rhs[k, j]
             }
         }
@@ -80,8 +84,8 @@ public func + (lhs: Matrix, rhs: Matrix) -> Matrix {
     let row = lhs.row
     let col = lhs.col
     let out = Matrix(row: row, col: col)
-    for i in 0 ..< row {
-        for j in 0 ..< col {
+    for i in 0..<row {
+        for j in 0..<col {
             out[i, j] = lhs[i, j] + rhs[i, j]
         }
     }
@@ -91,8 +95,8 @@ public func + (lhs: Matrix, rhs: Matrix) -> Matrix {
 public func += (lhs: inout Matrix, rhs: Matrix) {
     let row = lhs.row
     let col = lhs.col
-    for i in 0 ..< row {
-        for j in 0 ..< col {
+    for i in 0..<row {
+        for j in 0..<col {
             lhs[i, j] += rhs[i, j]
         }
     }
@@ -102,8 +106,8 @@ public func * (lhs: Matrix, rhs: [Float]) -> [Float] {
     let row = lhs.row
     let col = lhs.col
     var output = Array.init(repeating: Float(0.0), count: row)
-    for i in 0 ..< row {
-        for j in 0 ..< col {
+    for i in 0..<row {
+        for j in 0..<col {
             output[i] += lhs[i, j] * rhs[j]
         }
     }
@@ -112,14 +116,14 @@ public func * (lhs: Matrix, rhs: [Float]) -> [Float] {
 
 public func + (lhs: [Float], rhs: [Float]) -> [Float] {
     var output = Array.init(repeating: Float(0.0), count: lhs.count)
-    for i in 0 ..< lhs.count {
+    for i in 0..<lhs.count {
         output[i] = lhs[i] + rhs[i]
     }
     return output
 }
 
 public func += (lhs: inout [Float], rhs: [Float]) {
-    for i in 0 ..< lhs.count {
+    for i in 0..<lhs.count {
         lhs[i] += rhs[i]
     }
 }

@@ -17,7 +17,7 @@ public class Loss {
     public class mod2: AbstractLoss {
         public static func loss(score: [Float], label: [Float]) -> Float {
             var loss: Float = 0.0
-            for i in 0 ..< score.count {
+            for i in 0..<score.count {
                 loss += (score[i] - label[i]) * (score[i] - label[i])
             }
             return loss
