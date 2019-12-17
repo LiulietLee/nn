@@ -33,7 +33,7 @@ public class LLVector<T> {
     private var stride: Int!
     
     public var byteCount: Int { return stride * length }
-    public var memory: UnsafeMutableRawPointer { return pointer }
+    public var memory: Pointer { return pointer }
     public var byteSize: Int {
         let alignment = Int(getpagesize())
         let size = stride * length

@@ -10,8 +10,8 @@ import Foundation
 
 public class Sequential: Container {
     private var layers: [Layer] = []
-    private var score = [Float]()
-    private var input = [Float]()
+    private var score = NNArray()
+    private var input = NNArray()
     
     public var lossClass = Loss.mod2.self
     
@@ -23,7 +23,7 @@ public class Sequential: Container {
         self.layers.append(contentsOf: layers)
     }
     
-    public func forward(_ input: [Float]) -> [Float] {
+    public func forward(_ input: NNArray) -> NNArray {
         self.input = input
         var input = input
         for l in layers {
@@ -33,7 +33,7 @@ public class Sequential: Container {
         return score
     }
     
-    public func backward(_ label: [Float], rate: Float = 0.1, derivative: [Float] = []) {
+    public func backward(_ label: NNArray, rate: Float = 0.1, derivative: NNArray = NNArray()) {
         var r = derivative.isEmpty
             ? lossClass.derivative(score: score, label: label)
             : derivative
@@ -46,7 +46,7 @@ public class Sequential: Container {
         }
     }
     
-    public func loss(_ label: [Float]) -> Float {
+    public func loss(_ label: NNArray) -> Float {
         return lossClass.loss(score: score, label: label)
     }
 }

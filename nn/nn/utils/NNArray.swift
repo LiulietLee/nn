@@ -27,6 +27,12 @@ public class NNArray: LLVector<Float> {
         self.d = d
         setAcci()
     }
+    
+    private init(_ data: Pointer, d: [Int]) {
+        super.init(data, d.reduce(1, *), d.reduce(1, *))
+        self.d = d
+        setAcci()
+    }
 
     init(_ data: [Float], d: [Int]) {
         super.init()
@@ -37,10 +43,19 @@ public class NNArray: LLVector<Float> {
 
     @discardableResult
     public func dim(_ d: Int...) -> NNArray {
+        return dim(d)
+    }
+    
+    @discardableResult
+    public func dim(_ d: [Int]) -> NNArray {
         precondition(d.reduce(1, *) == count)
         self.d = d
         setAcci()
         return self
+    }
+    
+    override public func copy() -> NNArray {
+        return NNArray(super.copy().memory, d: d)
     }
     
     private func setAcci() {

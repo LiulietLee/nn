@@ -9,7 +9,7 @@
 import Foundation
 
 public class Matrix {
-    private var _data: [[Float]] = []
+    private var _data = NNArray()
     
     private(set) var row: Int = 0
     private(set) var col: Int = 0
@@ -17,15 +17,12 @@ public class Matrix {
     public init(row: Int = 1, col: Int = 1) {
         self.row = row
         self.col = col
-        _data = Array.init(
-            repeating: Array.init(repeating: 0.0, count: col),
-            count: row
-        )
+        _data = NNArray(row, col, initValue: 0.0)
     }
     
-    private init(_ data: [[Float]]) {
-        self.row = data.count
-        self.col = data[0].count
+    private init(_ data: NNArray) {
+        self.row = data.d[0]
+        self.col = data.d[1]
         self._data = data
     }
     
@@ -37,7 +34,7 @@ public class Matrix {
     public func rand() -> Matrix {
         for i in 0..<row {
             for j in 0..<col {
-                _data[i][j] = Float.random(in: -1.0..<1.0)
+                _data[i, j] = Float.random(in: -1.0..<1.0)
             }
         }
         return self
@@ -47,7 +44,7 @@ public class Matrix {
     public func ones() -> Matrix {
         for i in 0..<row {
             for j in 0..<col {
-                _data[i][j] = 1.0
+                _data[i, j] = 1.0
             }
         }
         return self
@@ -55,10 +52,10 @@ public class Matrix {
     
     public subscript(index1: Int, index2: Int) -> Float {
         get {
-            return _data[index1][index2]
+            return _data[index1, index2]
         }
         set(newValue) {
-            _data[index1][index2] = newValue
+            _data[index1, index2] = newValue
         }
     }
 }
@@ -102,10 +99,10 @@ public func += (lhs: inout Matrix, rhs: Matrix) {
     }
 }
 
-public func * (lhs: Matrix, rhs: [Float]) -> [Float] {
+public func * (lhs: Matrix, rhs: NNArray) -> NNArray {
     let row = lhs.row
     let col = lhs.col
-    var output = Array.init(repeating: Float(0.0), count: row)
+    let output = NNArray(row, initValue: 0.0)
     for i in 0..<row {
         for j in 0..<col {
             output[i] += lhs[i, j] * rhs[j]
@@ -114,15 +111,15 @@ public func * (lhs: Matrix, rhs: [Float]) -> [Float] {
     return output
 }
 
-public func + (lhs: [Float], rhs: [Float]) -> [Float] {
-    var output = Array.init(repeating: Float(0.0), count: lhs.count)
+public func + (lhs: NNArray, rhs: NNArray) -> NNArray {
+    let output = NNArray(lhs.count, initValue: 0.0)
     for i in 0..<lhs.count {
         output[i] = lhs[i] + rhs[i]
     }
     return output
 }
 
-public func += (lhs: inout [Float], rhs: [Float]) {
+public func += (lhs: inout NNArray, rhs: NNArray) {
     for i in 0..<lhs.count {
         lhs[i] += rhs[i]
     }

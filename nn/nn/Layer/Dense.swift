@@ -13,9 +13,9 @@ public class Dense: Layer {
     private(set) var outFeatures = 0
     private(set) var needBias = false
     private(set) var relu = true
-    private var bias = [Float]()
-    public var score = [Float]()
-    public var interScore = [Float]()
+    private var bias = NNArray()
+    public var score = NNArray()
+    public var interScore = NNArray()
     private var param: Matrix
     
     public init(inFeatures: Int, outFeatures: Int, bias: Bool = true, relu: Bool = true) {
@@ -23,19 +23,14 @@ public class Dense: Layer {
         self.outFeatures = outFeatures
         needBias = bias
         self.relu = relu
-        
-        self.bias = Array.init(
-            repeating: needBias ? 0.1 : Float(0.0),
-            count: outFeatures
-        )
-        
+        self.bias = NNArray(outFeatures, initValue: needBias ? 0.1 : Float(0.0))
         param = Matrix(row: outFeatures, col: inFeatures).rand()
     }
     
-    public func forward(_ input: [Float]) -> [Float] {
+    public func forward(_ input: NNArray) -> NNArray {
         if relu {
             interScore = param * input + bias
-            score = interScore.map { return $0 > 0.0 ? $0 : 0.0 }
+            score = NNArray(interScore.map { return $0 > 0.0 ? $0 : 0.0 }, d: [outFeatures])
         } else {
             score = param * input + bias
         }
@@ -43,11 +38,11 @@ public class Dense: Layer {
         return score
     }
     
-    public func backward(_ node: [Float], derivative: [Float], rate: Float = 0.1) -> [Float] {
-        var da = Array.init(repeating: Float(0.0), count: node.count)
+    public func backward(_ node: NNArray, derivative: NNArray, rate: Float = 0.1) -> NNArray {
+        let da = NNArray(node.count, initValue: 0.0)
         
         if needBias {
-            bias = zip(bias, derivative).map { return $0.0 - $0.1 * rate }
+            bias = NNArray(zip(bias, derivative).map { return $0.0 - $0.1 * rate }, d: [outFeatures])
         }
         
         for i in 0..<score.count {

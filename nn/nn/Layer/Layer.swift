@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol Layer {
-    var score: [Float] { get set }
-    func forward(_ input: [Float]) -> [Float]
-    func backward(_ node: [Float], derivative: [Float], rate: Float) -> [Float]
+    var score: NNArray { get set }
+    func forward(_ input: NNArray) -> NNArray
+    func backward(_ node: NNArray, derivative: NNArray, rate: Float) -> NNArray
 }

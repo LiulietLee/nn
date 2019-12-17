@@ -9,13 +9,13 @@
 import Foundation
 
 public protocol AbstractLoss {
-    static func loss(score: [Float], label: [Float]) -> Float
-    static func derivative(score: [Float], label: [Float]) -> [Float]
+    static func loss(score: NNArray, label: NNArray) -> Float
+    static func derivative(score: NNArray, label: NNArray) -> NNArray
 }
 
 public class Loss {
     public class mod2: AbstractLoss {
-        public static func loss(score: [Float], label: [Float]) -> Float {
+        public static func loss(score: NNArray, label: NNArray) -> Float {
             var loss: Float = 0.0
             for i in 0..<score.count {
                 loss += (score[i] - label[i]) * (score[i] - label[i])
@@ -23,8 +23,8 @@ public class Loss {
             return loss
         }
         
-        public static func derivative(score: [Float], label: [Float]) -> [Float] {
-            return zip(label, score).map { return -2.0 * ($0.0 - $0.1) }
+        public static func derivative(score: NNArray, label: NNArray) -> NNArray {
+            return NNArray(zip(label, score).map { return -2.0 * ($0.0 - $0.1) }, d: score.d)
         }
     }
 }

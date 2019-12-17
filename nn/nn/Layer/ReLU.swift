@@ -9,15 +9,15 @@
 import Foundation
 
 public class ReLU: Layer {
-    public var score: [Float] = []
+    public var score = NNArray()
     
-    public func backward(_ node: [Float], derivative: [Float], rate: Float = 0.1) -> [Float] {
-        return zip(node, derivative).map {
+    public func backward(_ node: NNArray, derivative: NNArray, rate: Float = 0.1) -> NNArray {
+        return NNArray(zip(node, derivative).map {
             return $0.0 >= 0.0 ? $0.1 : 0.0
-        }
+        }, d: node.d)
     }
     
-    public func forward(_ input: [Float]) -> [Float] {
+    public func forward(_ input: NNArray) -> NNArray {
         score = input
         for i in 0..<input.count {
             score[i] = max(0, input[i])
