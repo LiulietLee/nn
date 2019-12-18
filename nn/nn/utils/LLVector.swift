@@ -27,13 +27,12 @@ import CoreFoundation
 public class LLVector<T> {
     public typealias Pointer = UnsafeMutableRawPointer
     
-    private var pointer: Pointer!
+    public var pointer: Pointer!
     private var length: Int!
     private(set) var capacity: Int!
     private var stride: Int!
     
     public var byteCount: Int { return stride * length }
-    public var memory: Pointer { return pointer }
     public var byteSize: Int {
         let alignment = Int(getpagesize())
         let size = stride * length
@@ -152,7 +151,7 @@ extension LLVector {
             pointer = newAddr
         }
         
-        memcpy(pointer.advanced(by: stride * length), vector.memory, stride * vector.count)
+        memcpy(pointer.advanced(by: stride * length), vector.pointer, stride * vector.count)
         length += vector.count
     }
     
@@ -237,7 +236,7 @@ extension LLVector {
             memcpy(dst, src, stride * (length - index))
         }
         
-        memcpy(pointer.advanced(by: stride * index), vector.memory, stride * vector.count)
+        memcpy(pointer.advanced(by: stride * index), vector.pointer, stride * vector.count)
         length += vector.count
     }
     
@@ -320,7 +319,7 @@ extension LLVector {
     }
     
     private func __deallocate(_ ptr: Pointer) {
-        free(ptr)
+        ptr.deallocate()
     }
     
     private func __fill_memory(_ ptr: Pointer, _ len: Int, _ val: T) {

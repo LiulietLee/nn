@@ -24,12 +24,12 @@ public class Sequential: Container {
     }
     
     public func forward(_ input: NNArray) -> NNArray {
-        self.input = input
-        var input = input
+        self.input = input.copy()
+        var input = input.copy()
         for l in layers {
             input = l.forward(input)
         }
-        score = input
+        score = input.copy()
         return score
     }
     

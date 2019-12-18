@@ -10,6 +10,7 @@ import Foundation
 
 let net = Sequential()
 
+/*
 net.add([
     Dense(inFeatures: 5, outFeatures: 3),
     Dense(inFeatures: 3, outFeatures: 2)
@@ -20,18 +21,24 @@ for i in 0..<20 {
     let label = NNArray([1, 0], d: [2])
     let score = net.forward(img)
     let loss = net.loss(label)
-    net.backward(label, rate: 0.1)
+    net.backward(label, rate: 0.01)
 
     print("epoch \(i): loss: \(loss), score: \(score.map() { $0 })")
 }
-
-/*
-let a = NNArray(5, 5, 3, initValue: 1)
-let conv = Conv(2, 2, count: 3)
-conv.setDepth(a.d[2])
-let b = conv.forward(a)
-print(b.d)
-for val in b {
-    print(val)
-}
 */
+
+net.add([
+    Conv(2, 2, count: 3),
+    Conv(2, 2),
+    Dense(inFeatures: 4, outFeatures: 4)
+])
+
+for i in 0..<200 {
+    let img = NNArray((0..<16).map{ _ in Float(1) }, d: [4, 4, 1])
+    let label = NNArray([1, 0, 0, 0], d: [4])
+    let score = net.forward(img)
+    let loss = net.loss(label)
+    net.backward(label, rate: 0.01)
+
+    print("epoch \(i): loss: \(loss), score: \(score.map() { $0 })")
+}

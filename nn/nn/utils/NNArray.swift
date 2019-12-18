@@ -8,35 +8,32 @@
 
 import Foundation
 
-public class NNArray: LLVector<Float> {
+public class NNArray {
+    public typealias Pointer = LLVector<Float>
+    
+    public let data: Pointer!
     var d = [Int]()
     var acci = [Int]()
     
-    override public init() {
-        super.init()
+    public init() {
+        data = Pointer()
     }
     
     public init(_ d: Int..., initValue: Float = 0.0) {
-        super.init(repeaing: initValue, count: d.reduce(1, *))
-        self.d = d
-        setAcci()
-    }
-    
-    public init(_ data: Pointer, d: Int...) {
-        super.init(data, d.reduce(1, *), d.reduce(1, *))
+        data = Pointer(repeaing: initValue, count: d.reduce(1, *))
         self.d = d
         setAcci()
     }
     
     private init(_ data: Pointer, d: [Int]) {
-        super.init(data, d.reduce(1, *), d.reduce(1, *))
+        self.data = data
         self.d = d
         setAcci()
     }
 
     init(_ data: [Float], d: [Int]) {
-        super.init()
-        super.append(contentsOf: data)
+        self.data = Pointer()
+        self.data.append(contentsOf: data)
         self.d = d
         setAcci()
     }
@@ -54,8 +51,8 @@ public class NNArray: LLVector<Float> {
         return self
     }
     
-    override public func copy() -> NNArray {
-        return NNArray(super.copy().memory, d: d)
+    public func copy() -> NNArray {
+        return NNArray(data.copy(), d: d)
     }
     
     private func setAcci() {
@@ -72,10 +69,54 @@ public class NNArray: LLVector<Float> {
     
     public subscript(index: Int...) -> Float {
         get {
-            return get(getAddr(index))
+            return data[getAddr(index)]
         }
         set(newValue) {
-            set(getAddr(index), newValue)
+            data[getAddr(index)] = newValue
+        }
+    }
+    
+    public subscript(index: Int) -> Float {
+        get {
+            return data[index]
+        }
+        set(newValue) {
+            data[index] = newValue
         }
     }
 }
+
+extension NNArray: Sequence {
+    public struct Iterator: IteratorProtocol {
+        var current = 0
+        var pointer: Pointer
+        var length: Int
+        
+        init(_ pointer: Pointer, _ length: Int) {
+            self.pointer = pointer
+            self.length = length
+        }
+        
+        mutating public func next() -> Float? {
+            if current < length {
+                defer {
+                    current += 1
+                }
+                return pointer[current]
+            } else {
+                return nil
+            }
+        }
+    }
+    
+    public __consuming func makeIterator() -> Iterator {
+        return Iterator(data, data.count)
+    }
+}
+
+extension NNArray: RandomAccessCollection {
+    public var startIndex: Int { return 0 }
+    public var endIndex: Int { return data.count }
+}
+
+extension NNArray: MutableCollection {}
