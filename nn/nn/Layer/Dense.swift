@@ -19,12 +19,12 @@ public class Dense: Layer {
     private var param: Matrix
     
     public init(inFeatures: Int, outFeatures: Int, bias: Bool = true, relu: Bool = true) {
-        self.inFeatures = outFeatures
+        self.inFeatures = inFeatures
         self.outFeatures = outFeatures
         needBias = bias
         self.relu = relu
-        self.bias = NNArray(outFeatures, initValue: needBias ? 0.1 : Float(0.0))
-        param = Matrix(row: outFeatures, col: inFeatures).rand()
+        self.bias = NNArray(outFeatures, initValue: needBias ? 0.01 : Float(0.0))
+        param = Matrix(row: outFeatures, col: inFeatures)
     }
     
     public func forward(_ input: NNArray) -> NNArray {
@@ -35,7 +35,7 @@ public class Dense: Layer {
             score = param * input + bias
         }
         
-        return score
+        return score.copy()
     }
     
     public func backward(_ node: NNArray, derivative: NNArray, rate: Float = 0.1) -> NNArray {

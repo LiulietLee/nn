@@ -17,7 +17,7 @@ public class Matrix {
     public init(row: Int = 1, col: Int = 1) {
         self.row = row
         self.col = col
-        _data = NNArray(row, col, initValue: 0.0)
+        _data = NNArray(row, col, initValue: 0.01)
     }
     
     private init(_ data: NNArray) {
