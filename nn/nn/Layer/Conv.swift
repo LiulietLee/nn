@@ -43,12 +43,16 @@ public class Conv: Layer {
     
     public func forward(_ input: NNArray) -> NNArray {
         if row == 0 {
-            setDepth(input.d[2])
-            row = input.d[0] - width + 1 + padding * 2
-            col = input.d[1] - height + 1 + padding * 2
+            precondition(
+                (input.d[0] - width + padding * 2) % step == 0 &&
+                (input.d[1] - width + padding * 2) % step == 0
+            )
+            row = (input.d[0] - width + padding * 2) / step + 1
+            col = (input.d[1] - height + padding * 2) / step + 1
             if needBias {
                 bias = NNArray(count, initValue: 0.02)
             }
+            setDepth(input.d[2])
         }
         score = NNArray(row, col, count)
         
@@ -58,7 +62,7 @@ public class Conv: Layer {
                     for x in 0..<width {
                         for y in 0..<height {
                             for z in 0..<depth {
-                                let rx = i + x - padding, ry = j + y - padding
+                                let rx = i * step + x - padding, ry = j * step + y - padding
                                 if inBound(rx, ry, input) {
                                     score[i, j, c] += input[rx, ry, z] * symbols[x, y, z, c]
                                 }
@@ -98,7 +102,7 @@ public class Conv: Layer {
                     for z in 0..<depth {
                         for i in 0..<row {
                             for j in 0..<col {
-                                let rx = i + x - padding, ry = j + y - padding
+                                let rx = i * step + x - padding, ry = j * step + y - padding
                                 if inBound(rx, ry, node) {
                                     da[rx, ry, z] += symbols[x, y, z, c] * derivative[i, j, c] * rate
                                 }
@@ -115,7 +119,7 @@ public class Conv: Layer {
                     for z in 0..<depth {
                         for i in 0..<row {
                             for j in 0..<col {
-                                let rx = i + x - padding, ry = j + y - padding
+                                let rx = i * step + x - padding, ry = j * step + y - padding
                                 if inBound(rx, ry, node) {
                                     symbols[x, y, z, c] -= node[rx, ry, z] * derivative[i, j, c] * rate
                                 }

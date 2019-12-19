@@ -11,10 +11,9 @@ import Foundation
 let net = Sequential()
 
 net.add([
-    Conv(3, 3, count: 3, padding: 1),
-    Conv(3, 3, count: 3, padding: 1),
+    Conv(2, 2, count: 3, step: 2, padding: 1),
     Conv(2, 2),
-    Dense(inFeatures: 9, outFeatures: 4)
+    Dense(inFeatures: 4, outFeatures: 4)
 ])
 
 let img = NNArray((0..<4 * 4 * 3).map{ _ in Float.random(in: 0...1) }, d: [4, 4, 3])
