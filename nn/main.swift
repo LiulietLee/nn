@@ -11,8 +11,9 @@ import Foundation
 let net = Sequential()
 
 net.add([
-    Conv(2, 2, count: 3, step: 2, padding: 1),
-    Conv(2, 2),
+    Conv(3, 3, count: 3, padding: 1),
+    Conv(1, 1),
+    MaxPooling(),
     Dense(inFeatures: 4, outFeatures: 4)
 ])
 

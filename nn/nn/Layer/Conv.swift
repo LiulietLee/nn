@@ -45,7 +45,7 @@ public class Conv: Layer {
         if row == 0 {
             precondition(
                 (input.d[0] - width + padding * 2) % step == 0 &&
-                (input.d[1] - width + padding * 2) % step == 0
+                (input.d[1] - height + padding * 2) % step == 0
             )
             row = (input.d[0] - width + padding * 2) / step + 1
             col = (input.d[1] - height + padding * 2) / step + 1
@@ -76,7 +76,7 @@ public class Conv: Layer {
             }
         }
         
-        return score.copy()
+        return score
     }
     
     public func backward(_ node: NNArray, derivative: NNArray, rate: Float = 0.1) -> NNArray {

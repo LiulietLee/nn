@@ -35,7 +35,7 @@ public class Dense: Layer {
             score = param * input + bias
         }
         
-        return score.copy()
+        return score
     }
     
     public func backward(_ node: NNArray, derivative: NNArray, rate: Float = 0.1) -> NNArray {

@@ -18,6 +18,7 @@
 		4FA87003239D404C0043D957 /* NNArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FA87002239D404C0043D957 /* NNArray.swift */; };
 		4FA87005239D41710043D957 /* Conv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FA87004239D41710043D957 /* Conv.swift */; };
 		4FA9E9BE23A21590003C6730 /* LLVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FA9E9BD23A21590003C6730 /* LLVector.swift */; };
+		4FC30B6223AB821C00D27427 /* MaxPooling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC30B6123AB821C00D27427 /* MaxPooling.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -45,6 +46,7 @@
 		4FA87002239D404C0043D957 /* NNArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NNArray.swift; sourceTree = "<group>"; };
 		4FA87004239D41710043D957 /* Conv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conv.swift; sourceTree = "<group>"; };
 		4FA9E9BD23A21590003C6730 /* LLVector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LLVector.swift; sourceTree = "<group>"; };
+		4FC30B6123AB821C00D27427 /* MaxPooling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxPooling.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 				4F3581222351FCDC0037C87D /* ReLU.swift */,
 				4F3581182351EF820037C87D /* Dense.swift */,
 				4FA87004239D41710043D957 /* Conv.swift */,
+				4FC30B6123AB821C00D27427 /* MaxPooling.swift */,
 			);
 			path = Layer;
 			sourceTree = "<group>";
@@ -191,6 +194,7 @@
 				4F35811D2351F4660037C87D /* Layer.swift in Sources */,
 				4FA9E9BE23A21590003C6730 /* LLVector.swift in Sources */,
 				4F3581232351FCDC0037C87D /* ReLU.swift in Sources */,
+				4FC30B6223AB821C00D27427 /* MaxPooling.swift in Sources */,
 				4F35811B2351F4060037C87D /* Sequential.swift in Sources */,
 				4F35810F2351B1050037C87D /* main.swift in Sources */,
 			);
