@@ -10,7 +10,7 @@ import Foundation
 
 public protocol AbstractLoss {
     static func loss(score: NNArray, label: NNArray) -> Float
-    static func derivative(score: NNArray, label: NNArray) -> NNArray
+    static func delta(score: NNArray, label: NNArray) -> NNArray
 }
 
 public class Loss {
@@ -23,7 +23,7 @@ public class Loss {
             return loss
         }
         
-        public static func derivative(score: NNArray, label: NNArray) -> NNArray {
+        public static func delta(score: NNArray, label: NNArray) -> NNArray {
             return NNArray(zip(label, score).map { return -2.0 * ($0.0 - $0.1) }, d: score.d)
         }
     }

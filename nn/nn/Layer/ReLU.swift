@@ -11,10 +11,10 @@ import Foundation
 public class ReLU: Layer {
     public var score = NNArray()
     
-    public func backward(_ node: NNArray, derivative: NNArray, rate: Float = 0.1) -> NNArray {
-        return NNArray(zip(node, derivative).map {
+    public func backward(_ input: NNArray, delta: NNArray, rate: Float = 0.1) -> NNArray {
+        return NNArray(zip(input, delta).map {
             return $0.0 >= 0.0 ? $0.1 : 0.0
-        }, d: node.d)
+        }, d: input.d)
     }
     
     public func forward(_ input: NNArray) -> NNArray {

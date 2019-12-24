@@ -34,7 +34,7 @@ public class Conv: Layer {
     
     func setDepth(_ depth: Int) {
         self.depth = depth
-        symbols = NNArray(width, height, depth, count, initValue: 0.01)
+        symbols = NNArray(width, height, depth, count, initValue: 0.0001)
     }
     
     private func inBound(_ x: Int, _ y: Int, _ arr: NNArray) -> Bool {
@@ -50,7 +50,7 @@ public class Conv: Layer {
             row = (input.d[0] - width + padding * 2) / step + 1
             col = (input.d[1] - height + padding * 2) / step + 1
             if needBias {
-                bias = NNArray(count, initValue: 0.02)
+                bias = NNArray(count, initValue: 0.0002)
             }
             setDepth(input.d[2])
         }
@@ -79,17 +79,17 @@ public class Conv: Layer {
         return score
     }
     
-    public func backward(_ node: NNArray, derivative: NNArray, rate: Float = 0.1) -> NNArray {
-        let da = NNArray(node.count, initValue: 0.0)
-        da.dim(node.d)
-        derivative.dim(score.d)
+    public func backward(_ input: NNArray, delta: NNArray, rate: Float = 0.1) -> NNArray {
+        let da = NNArray(input.count, initValue: 0.0)
+        da.dim(input.d)
+        delta.dim(score.d)
         
         if needBias {
             for c in 0..<count {
                 var sum: Float = 0.0
                 for i in 0..<row {
                     for j in 0..<col {
-                        sum += derivative[i, j, c]
+                        sum += delta[i, j, c]
                     }
                 }
                 bias[c] -= sum * rate
@@ -103,8 +103,8 @@ public class Conv: Layer {
                         for i in 0..<row {
                             for j in 0..<col {
                                 let rx = i * step + x - padding, ry = j * step + y - padding
-                                if inBound(rx, ry, node) {
-                                    da[rx, ry, z] += symbols[x, y, z, c] * derivative[i, j, c] * rate
+                                if inBound(rx, ry, input) {
+                                    da[rx, ry, z] += symbols[x, y, z, c] * delta[i, j, c] * rate
                                 }
                             }
                         }
@@ -120,8 +120,8 @@ public class Conv: Layer {
                         for i in 0..<row {
                             for j in 0..<col {
                                 let rx = i * step + x - padding, ry = j * step + y - padding
-                                if inBound(rx, ry, node) {
-                                    symbols[x, y, z, c] -= node[rx, ry, z] * derivative[i, j, c] * rate
+                                if inBound(rx, ry, input) {
+                                    symbols[x, y, z, c] -= input[rx, ry, z] * delta[i, j, c] * rate
                                 }
                             }
                         }

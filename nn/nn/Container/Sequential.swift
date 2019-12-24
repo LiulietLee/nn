@@ -27,21 +27,25 @@ public class Sequential: Container {
         self.input = input.copy()
         var input = input.copy()
         for l in layers {
-            input = l.forward(input)
+            autoreleasepool {
+                input = l.forward(input)
+            }
         }
         score = input.copy()
         return score
     }
     
-    public func backward(_ label: NNArray, rate: Float = 0.1, derivative: NNArray = NNArray()) {
-        var r = derivative.isEmpty
-            ? lossClass.derivative(score: score, label: label)
-            : derivative
+    public func backward(_ label: NNArray, rate: Float = 0.1, delta: NNArray = NNArray()) {
+        var r = delta.isEmpty
+            ? lossClass.delta(score: score, label: label)
+            : delta
         for i in (0..<layers.count).reversed() {
-            if i == 0 {
-                r = layers[i].backward(input, derivative: r, rate: rate)
-            } else {
-                r = layers[i].backward(layers[i - 1].score, derivative: r, rate: rate)
+            autoreleasepool {
+                if i == 0 {
+                    r = layers[i].backward(input, delta: r, rate: rate)
+                } else {
+                    r = layers[i].backward(layers[i - 1].score, delta: r, rate: rate)
+                }
             }
         }
     }

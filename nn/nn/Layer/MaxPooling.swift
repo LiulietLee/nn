@@ -63,12 +63,12 @@ public class MaxPooling: Layer {
         return score
     }
     
-    public func backward(_ node: NNArray, derivative: NNArray, rate: Float) -> NNArray {
-        let da = NNArray(node.count, initValue: 0.0).dim(node.d)
-        derivative.dim(score.d)
+    public func backward(_ input: NNArray, delta: NNArray, rate: Float) -> NNArray {
+        let da = NNArray(input.count, initValue: 0.0).dim(input.d)
+        delta.dim(score.d)
         
         for choose in switches {
-            da[choose.ix, choose.iy, choose.k] = derivative[choose.oi, choose.oj, choose.k]
+            da[choose.ix, choose.iy, choose.k] = delta[choose.oi, choose.oj, choose.k]
         }
         
         return da

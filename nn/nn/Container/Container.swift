@@ -10,6 +10,6 @@ import Foundation
 
 public protocol Container {
     func forward(_ input: NNArray) -> NNArray
-    func backward(_ label: NNArray, rate: Float, derivative: NNArray)
+    func backward(_ label: NNArray, rate: Float, delta: NNArray)
     func loss(_ label: NNArray) -> Float
 }

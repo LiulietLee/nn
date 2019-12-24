@@ -9,7 +9,7 @@
 import Foundation
 
 public class Matrix {
-    private var _data = NNArray()
+    public var _data = NNArray()
     
     private(set) var row: Int = 0
     private(set) var col: Int = 0
@@ -17,7 +17,7 @@ public class Matrix {
     public init(row: Int = 1, col: Int = 1) {
         self.row = row
         self.col = col
-        _data = NNArray(row, col, initValue: 0.01)
+        _data = NNArray(row, col, initValue: 0.0001)
     }
     
     private init(_ data: NNArray) {
@@ -27,7 +27,7 @@ public class Matrix {
     }
     
     public func copy() -> Matrix {
-        return Matrix(_data)
+        return Matrix(_data.copy())
     }
     
     @discardableResult
