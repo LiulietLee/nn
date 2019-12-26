@@ -14,20 +14,19 @@ Core.device = MTLCreateSystemDefaultDevice()
 let net = Sequential()
 
 net.add([
-    Dense(inFeatures: 3072, outFeatures: 128, relu: false),
-    Dense(inFeatures: 128, outFeatures: 128, relu: false),
-    Dense(inFeatures: 128, outFeatures: 128, relu: false),
-    Dense(inFeatures: 128, outFeatures: 128, relu: false),
-    Dense(inFeatures: 128, outFeatures: 16, relu: false),
-    Dense(inFeatures: 16, outFeatures: 4, relu: false)
+    Conv(2, 2, step: 2),
+    Conv(2, 2, step: 2),
+    Conv(2, 2, step: 2),
+    Conv(2, 2, step: 2)
+//    Dense(inFeatures: 16, outFeatures: 4)
 ])
 
 let img = NNArray(32, 32, 3, initValue: 1.0)
-let label = NNArray([1, 0, 0, 0], d: [4])
+let label = NNArray([1, 1, 1, 1], d: [4])
 
 let start = DispatchTime.now()
 
-for i in 0..<80 {
+for i in 0..<20 {
         
     let score = net.forward(img)
     let loss = net.loss(label)
@@ -42,7 +41,6 @@ let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds
 let timeInterval = Double(nanoTime) / 1_000_000_000
 
 print("\(timeInterval) seconds")
-
 
 /*
 let reader = ImageReader()

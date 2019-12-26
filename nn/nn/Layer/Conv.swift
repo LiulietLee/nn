@@ -10,8 +10,8 @@ import Foundation
 
 public class Conv: Layer {
     public var score = NNArray()
-    private var symbols = NNArray()
-    private var bias = NNArray()
+    var convCore = NNArray()
+    var bias = NNArray()
     
     var needBias = true
     var width = 0
@@ -30,11 +30,12 @@ public class Conv: Layer {
         self.step = step
         self.padding = padding
         needBias = bias
+        self.bias = NNArray(count, initValue: 0.0)
     }
     
     func setDepth(_ depth: Int) {
         self.depth = depth
-        symbols = NNArray(width, height, depth, count, initValue: 0.0001)
+        convCore = NNArray(width, height, depth, count, initValue: 0.0001)
     }
     
     private func inBound(_ x: Int, _ y: Int, _ arr: NNArray) -> Bool {
@@ -49,12 +50,13 @@ public class Conv: Layer {
             )
             row = (input.d[0] - width + padding * 2) / step + 1
             col = (input.d[1] - height + padding * 2) / step + 1
-            if needBias {
-                bias = NNArray(count, initValue: 0.0002)
-            }
             setDepth(input.d[2])
         }
         score = NNArray(row, col, count)
+        
+        if Core.device != nil {
+            return forwardWithMetal(input)
+        }
         
         for c in 0..<count {
             for i in 0..<row {
@@ -64,7 +66,7 @@ public class Conv: Layer {
                             for z in 0..<depth {
                                 let rx = i * step + x - padding, ry = j * step + y - padding
                                 if inBound(rx, ry, input) {
-                                    score[i, j, c] += input[rx, ry, z] * symbols[x, y, z, c]
+                                    score[i, j, c] += input[rx, ry, z] * convCore[x, y, z, c]
                                 }
                             }
                         }
@@ -104,7 +106,7 @@ public class Conv: Layer {
                             for j in 0..<col {
                                 let rx = i * step + x - padding, ry = j * step + y - padding
                                 if inBound(rx, ry, input) {
-                                    da[rx, ry, z] += symbols[x, y, z, c] * delta[i, j, c] * rate
+                                    da[rx, ry, z] += convCore[x, y, z, c] * delta[i, j, c] * rate
                                 }
                             }
                         }
@@ -121,7 +123,7 @@ public class Conv: Layer {
                             for j in 0..<col {
                                 let rx = i * step + x - padding, ry = j * step + y - padding
                                 if inBound(rx, ry, input) {
-                                    symbols[x, y, z, c] -= input[rx, ry, z] * delta[i, j, c] * rate
+                                    convCore[x, y, z, c] -= input[rx, ry, z] * delta[i, j, c] * rate
                                 }
                             }
                         }

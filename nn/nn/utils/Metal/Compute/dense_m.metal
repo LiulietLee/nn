@@ -50,9 +50,7 @@ kernel void dense_backward_1(device const bool &need_relu,
 {
     da[j] = 0.0;
     for (int i = 0; i < row; i++) {
-        if (need_relu) {
-            da[j] += (inter_score[i] >= 0.0 ? 1.0 : 0.0) * delta[i] * matrix[i * col + j] * rate;
-        } else {
+        if (!need_relu || inter_score[i] >= 0.0) {
             da[j] += delta[i] * matrix[i * col + j] * rate;
         }
     }
@@ -75,9 +73,7 @@ kernel void dense_backward_2(device const bool &need_relu,
         bi[i] -= delta[i] * rate;
     }
     
-    if (need_relu) {
-        matrix[index] -= (inter_score[i] >= 0.0 ? 1.0 : 0.0) * delta[i] * input[j] * rate;
-    } else {
+    if (!need_relu || inter_score[i] >= 0.0) {
         matrix[index] -= delta[i] * input[j] * rate;
     }
 }

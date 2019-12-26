@@ -9,9 +9,9 @@
 import Foundation
 import Metal
 
-class Core {
+public class Core {
     
-    static var device: MTLDevice? = nil {
+    public static var device: MTLDevice? = nil {
         didSet {
             if device != nil {
                 library = device!.makeDefaultLibrary()!
