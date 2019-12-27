@@ -27,6 +27,9 @@ extension Conv {
             padding = obj.padding
         }
     }
+}
+
+extension Conv {
     
     func forwardWithMetal(_ input: NNArray) -> NNArray {
         let pipeline = Core.pipeline(by: "conv_forward");
@@ -41,9 +44,9 @@ extension Conv {
         )
         
         let gridSize = MTLSizeMake(row * col, count, 1)
-        let w = pipeline.threadExecutionWidth
-        let h = pipeline.maxTotalThreadsPerThreadgroup / w
-        let threadSize = MTLSizeMake(min(row * col, w), min(count, h), 1)
+        let w = min(row * col, pipeline.threadExecutionWidth)
+        let h = min(count, pipeline.maxTotalThreadsPerThreadgroup / w)
+        let threadSize = MTLSizeMake(w, h, 1)
         encoder.dispatchThreads(gridSize, threadsPerThreadgroup: threadSize)
         encoder.endEncoding()
         
@@ -52,5 +55,62 @@ extension Conv {
 
         return score
     }
+}
 
+extension Conv {
+    
+    private func backward1(_ da: NNArray, input: NNArray, delta: NNArray, rate: Float) {
+        var rate = rate
+        let pipeline = Core.pipeline(by: "conv_backward_1");
+        let queue = Core.queue()
+        var info = ConvLayerInfo(self, input: input)
+        
+        let commandBuffer = queue.makeCommandBuffer()!
+        let encoder = Core.encode(
+            commandBuffer: commandBuffer,
+            pipeline: pipeline,
+            buffers: Core.buffer(&info), Core.buffer(convCore), Core.buffer(delta), Core.buffer(&rate), Core.buffer(da)
+        )
+        
+        let gridSize = MTLSizeMake(row * col, depth, 1)
+        let w = min(row * col, pipeline.threadExecutionWidth)
+        let h = min(depth, pipeline.maxTotalThreadsPerThreadgroup / w)
+        let threadSize = MTLSizeMake(w, h, 1)
+        encoder.dispatchThreads(gridSize, threadsPerThreadgroup: threadSize)
+        encoder.endEncoding()
+        
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+    }
+    
+    private func backward2(input: NNArray, delta: NNArray, rate: Float) {
+        var rate = rate
+        let pipeline = Core.pipeline(by: "conv_backward_2");
+        let queue = Core.queue()
+        var info = ConvLayerInfo(self, input: input)
+        
+        let commandBuffer = queue.makeCommandBuffer()!
+        let encoder = Core.encode(
+            commandBuffer: commandBuffer,
+            pipeline: pipeline,
+            buffers: Core.buffer(&info), Core.buffer(input), Core.buffer(delta), Core.buffer(&rate), Core.buffer(&needBias), Core.buffer(bias), Core.buffer(convCore)
+        )
+        
+        let gridSize = MTLSizeMake(width * height, depth, count)
+        let w = min(width * height, pipeline.threadExecutionWidth)
+        let h = min(depth, pipeline.maxTotalThreadsPerThreadgroup / w)
+        let d = min(count, max(1, pipeline.maxTotalThreadsPerThreadgroup / w / h))
+        let threadSize = MTLSizeMake(w, h, d)
+        encoder.dispatchThreads(gridSize, threadsPerThreadgroup: threadSize)
+        encoder.endEncoding()
+        
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+    }
+    
+    func backwardWithMetal(_ da: NNArray, _ input: NNArray, _ delta: NNArray, _ rate: Float) -> NNArray {
+        backward1(da, input: input, delta: delta, rate: rate)
+        backward2(input: input, delta: delta, rate: rate)
+        return da
+    }
 }

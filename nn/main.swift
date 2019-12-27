@@ -14,20 +14,22 @@ Core.device = MTLCreateSystemDefaultDevice()
 let net = Sequential()
 
 net.add([
+    Conv(2, 2, count: 3, step: 2),
     Conv(2, 2, step: 2),
-    Conv(2, 2, step: 2),
-    Conv(2, 2, step: 2),
+    Conv(2, 2, count: 3, step: 2),
     Conv(2, 2, step: 2)
-//    Dense(inFeatures: 16, outFeatures: 4)
 ])
+
+//net.add([
+//    Conv(2, 2, step: 2)
+//])
 
 let img = NNArray(32, 32, 3, initValue: 1.0)
 let label = NNArray([1, 1, 1, 1], d: [4])
 
 let start = DispatchTime.now()
 
-for i in 0..<20 {
-        
+for i in 0..<10 {
     let score = net.forward(img)
     let loss = net.loss(label)
     net.backward(label, rate: 0.1)
