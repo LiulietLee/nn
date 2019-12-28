@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Metal
+import MetalPerformanceShaders
 
 Core.device = MTLCreateSystemDefaultDevice()
 
@@ -15,7 +15,9 @@ let net = Sequential()
 
 net.add([
     Dense(inFeatures: 3072, outFeatures: 128),
+    ReLU(),
     Dense(inFeatures: 128, outFeatures: 128),
+    ReLU(),
     Dense(inFeatures: 128, outFeatures: 4)
 ])
 

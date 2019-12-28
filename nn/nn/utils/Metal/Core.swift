@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Metal
+import MetalPerformanceShaders
 
 public class Core {
     

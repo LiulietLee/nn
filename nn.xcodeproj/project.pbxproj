@@ -17,6 +17,8 @@
 		4F35811F2351F6ED0037C87D /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F35811E2351F6ED0037C87D /* Container.swift */; };
 		4F3581212351FA590037C87D /* Loss.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3581202351FA590037C87D /* Loss.swift */; };
 		4F3581232351FCDC0037C87D /* ReLU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3581222351FCDC0037C87D /* ReLU.swift */; };
+		4F8661C623B7AFA300629889 /* relu_m.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661C523B7AFA300629889 /* relu_m.metal */; };
+		4F8661C823B7AFBF00629889 /* ReLU+Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661C723B7AFBF00629889 /* ReLU+Metal.swift */; };
 		4F9060FC23B49D2400B26B12 /* conv_m.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4F9060FB23B49D2400B26B12 /* conv_m.metal */; };
 		4F9060FE23B49D3F00B26B12 /* Conv+Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F9060FD23B49D3F00B26B12 /* Conv+Metal.swift */; };
 		4FA87003239D404C0043D957 /* NNArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FA87002239D404C0043D957 /* NNArray.swift */; };
@@ -51,6 +53,8 @@
 		4F35811E2351F6ED0037C87D /* Container.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
 		4F3581202351FA590037C87D /* Loss.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loss.swift; sourceTree = "<group>"; };
 		4F3581222351FCDC0037C87D /* ReLU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReLU.swift; sourceTree = "<group>"; };
+		4F8661C523B7AFA300629889 /* relu_m.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = relu_m.metal; sourceTree = "<group>"; };
+		4F8661C723B7AFBF00629889 /* ReLU+Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReLU+Metal.swift"; sourceTree = "<group>"; };
 		4F9060FB23B49D2400B26B12 /* conv_m.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = conv_m.metal; sourceTree = "<group>"; };
 		4F9060FD23B49D3F00B26B12 /* Conv+Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Conv+Metal.swift"; sourceTree = "<group>"; };
 		4FA87002239D404C0043D957 /* NNArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NNArray.swift; sourceTree = "<group>"; };
@@ -79,6 +83,7 @@
 				4FBF5CB323B10070006763CB /* Core.swift */,
 				4F16BAA223AF256D00E905D3 /* Dense+Metal.swift */,
 				4F9060FD23B49D3F00B26B12 /* Conv+Metal.swift */,
+				4F8661C723B7AFBF00629889 /* ReLU+Metal.swift */,
 			);
 			path = Metal;
 			sourceTree = "<group>";
@@ -88,6 +93,7 @@
 			children = (
 				4F16BAA023AF23A700E905D3 /* dense_m.metal */,
 				4F9060FB23B49D2400B26B12 /* conv_m.metal */,
+				4F8661C523B7AFA300629889 /* relu_m.metal */,
 			);
 			path = Compute;
 			sourceTree = "<group>";
@@ -228,10 +234,12 @@
 				4F9060FC23B49D2400B26B12 /* conv_m.metal in Sources */,
 				4F3581212351FA590037C87D /* Loss.swift in Sources */,
 				4F35811D2351F4660037C87D /* Layer.swift in Sources */,
+				4F8661C823B7AFBF00629889 /* ReLU+Metal.swift in Sources */,
 				4FA9E9BE23A21590003C6730 /* LLVector.swift in Sources */,
 				4F3581232351FCDC0037C87D /* ReLU.swift in Sources */,
 				4F16BAA323AF256D00E905D3 /* Dense+Metal.swift in Sources */,
 				4F16BAA123AF23A700E905D3 /* dense_m.metal in Sources */,
+				4F8661C623B7AFA300629889 /* relu_m.metal in Sources */,
 				4FBC046F23ACF8CA0072B9BE /* ImageReader.swift in Sources */,
 				4FBF5CB423B10071006763CB /* Core.swift in Sources */,
 				4FC30B6223AB821C00D27427 /* MaxPooling.swift in Sources */,
