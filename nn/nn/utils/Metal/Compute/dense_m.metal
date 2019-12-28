@@ -25,17 +25,18 @@ kernel void dense_matrix_sum(device const float *matrix,
                              device float *inter_score,
                              uint index [[ thread_position_in_grid ]])
 {
-    inter_score[index] = bi[index];
+    inter_score[index] = 0.0;
     
     for (int i = 0; i < col; i++) {
         inter_score[index] += matrix[index * col + i];
     }
 
+    score[index] = inter_score[index];
     if (need_relu && inter_score[index] < 0.0) {
-        score[index] = 0.0;
-    } else {
-        score[index] = inter_score[index];
+        score[index] *= 0.001;
     }
+    
+    score[index] += bi[index];
 }
 
 kernel void dense_backward_1(device const bool &need_relu,
@@ -50,8 +51,11 @@ kernel void dense_backward_1(device const bool &need_relu,
 {
     da[j] = 0.0;
     for (int i = 0; i < row; i++) {
-        if (!need_relu || inter_score[i] >= 0.0) {
-            da[j] += delta[i] * matrix[i * col + j] * rate;
+        float d = delta[i] * matrix[i * col + j] * rate;
+        if (need_relu && inter_score[i] < 0.0) {
+            da[j] += d * 0.001;
+        } else {
+            da[j] += d;
         }
     }
 }
@@ -73,7 +77,10 @@ kernel void dense_backward_2(device const bool &need_relu,
         bi[i] -= delta[i] * rate;
     }
     
-    if (!need_relu || inter_score[i] >= 0.0) {
-        matrix[index] -= delta[i] * input[j] * rate;
+    float d = delta[i] * input[j] * rate;
+    if (need_relu && inter_score[i] < 0.0) {
+        matrix[index] -= d * 0.001;
+    } else {
+        matrix[index] -= d;
     }
 }

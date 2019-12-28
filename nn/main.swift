@@ -14,10 +14,9 @@ Core.device = MTLCreateSystemDefaultDevice()
 let net = Sequential()
 
 net.add([
-    Conv(2, 2, count: 3, step: 2),
-    Conv(2, 2, step: 2),
-    Conv(2, 2, count: 3, step: 2),
-    Conv(2, 2, step: 2)
+    Dense(inFeatures: 3072, outFeatures: 128),
+    Dense(inFeatures: 128, outFeatures: 128),
+    Dense(inFeatures: 128, outFeatures: 4)
 ])
 
 //net.add([
@@ -25,7 +24,7 @@ net.add([
 //])
 
 let img = NNArray(32, 32, 3, initValue: 1.0)
-let label = NNArray([1, 1, 1, 1], d: [4])
+let label = NNArray([1, 0, 0, 0], d: [4])
 
 let start = DispatchTime.now()
 

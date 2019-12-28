@@ -13,14 +13,14 @@ public class ReLU: Layer {
     
     public func backward(_ input: NNArray, delta: NNArray, rate: Float = 0.1) -> NNArray {
         return NNArray(zip(input, delta).map {
-            return $0.0 >= 0.0 ? $0.1 : 0.0
+            return $0.0 >= 0.0 ? $0.1 : 0.001 * $0.1
         }, d: input.d)
     }
     
     public func forward(_ input: NNArray) -> NNArray {
         score = input
         for i in 0..<input.count {
-            score[i] = max(0, input[i])
+            score[i] = max(input[i] * 0.001, input[i])
         }
         return score
     }

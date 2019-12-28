@@ -36,7 +36,7 @@ public class Dense: Layer {
         } else {
             if relu {
                 interScore = param * input + bias
-                score = NNArray(interScore.map { return $0 > 0.0 ? $0 : 0.0 }, d: [outFeatures])
+                score = NNArray(interScore.map { return $0 > 0.0 ? $0 : 0.001 * $0 }, d: [outFeatures])
             } else {
                 score = param * input + bias
             }
@@ -62,7 +62,7 @@ public class Dense: Layer {
         for i in 0..<outFeatures {
             for j in 0..<inFeatures {
                 if relu {
-                    da[j] += (interScore[i] >= 0.0 ? 1.0 : 0.0)
+                    da[j] += (interScore[i] >= 0.0 ? 1.0 : 0.001)
                         * delta[i] * param[i, j] * rate
                 } else {
                     da[j] += delta[i] * param[i, j] * rate
@@ -74,7 +74,7 @@ public class Dense: Layer {
         for i in 0..<outFeatures {
             for j in 0..<inFeatures {
                 if relu {
-                    param[i, j] -= (interScore[i] >= 0.0 ? 1.0 : 0.0)
+                    param[i, j] -= (interScore[i] >= 0.0 ? 1.0 : 0.001)
                         * delta[i] * input[j] * rate
                 } else {
                     param[i, j] -= delta[i] * input[j] * rate
