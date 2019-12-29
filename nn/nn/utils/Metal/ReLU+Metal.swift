@@ -32,6 +32,9 @@ extension ReLU {
 
         return score
     }
+}
+
+extension ReLU {
     
     func backwardWithMetal(_ input: NNArray, _ delta: NNArray) -> NNArray {
         let da = NNArray(input.count)

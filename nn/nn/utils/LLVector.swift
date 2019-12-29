@@ -28,7 +28,7 @@ public class LLVector<T> {
     public typealias Pointer = UnsafeMutableRawPointer
     
     public var pointer: Pointer!
-    private var length: Int!
+    var length: Int!
     private(set) var capacity: Int!
     private var stride: Int!
     

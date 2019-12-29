@@ -12,7 +12,11 @@ public class MaxPooling: Layer {
     
     public var score = NNArray()
     
-    var switches = [(oi: Int, oj: Int, ix: Int, iy: Int, k: Int)]()
+    struct SwitchMapper {
+        var oi: Int, oj: Int, ix: Int, iy: Int, k: Int        
+    }
+    
+    var switches = LLVector<SwitchMapper>()
     var width = 0
     var height = 0
     var step = 0
@@ -34,9 +38,14 @@ public class MaxPooling: Layer {
             )
             row = (input.d[0] - width) / step + 1
             col = (input.d[1] - width) / step + 1
+            switches = LLVector<SwitchMapper>(capacity: row * col * input.d[2])
+            switches.length = row * col * input.d[2]
         }
         score = NNArray(row, col, input.d[2], initValue: 0.0)
-        switches = []
+        
+        if Core.device != nil {
+            return forwardWithMetal(input)
+        }
         
         for k in 0..<input.d[2] {
             for i in 0..<row {
@@ -54,7 +63,9 @@ public class MaxPooling: Layer {
                             }
                         }
                     }
-                    switches.append((oi: i, oj: j, ix: maxPostion.0, iy: maxPostion.1, k: k))
+                    switches[i * col * input.d[2] + j * input.d[2] + k] = SwitchMapper(
+                        oi: i, oj: j, ix: maxPostion.0, iy: maxPostion.1, k: k
+                    )
                     score[i, j, k] = maxValue
                 }
             }
@@ -66,6 +77,10 @@ public class MaxPooling: Layer {
     public func backward(_ input: NNArray, delta: NNArray, rate: Float) -> NNArray {
         let da = NNArray(input.count, initValue: 0.0).dim(input.d)
         delta.dim(score.d)
+        
+        if Core.device != nil {
+            return backwardWithMetal(input, delta)
+        }
         
         for choose in switches {
             da[choose.ix, choose.iy, choose.k] = delta[choose.oi, choose.oj, choose.k]

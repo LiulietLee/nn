@@ -50,12 +50,16 @@ public class Core {
         )!
     }
     
-    static func buffer(_ arr: NNArray) -> MTLBuffer {
+    static func buffer<T>(_ vec: LLVector<T>) -> MTLBuffer {
         return device!.makeBuffer(
-            bytesNoCopy: arr.data.pointer,
-            length: arr.data.byteSize,
+            bytesNoCopy: vec.pointer,
+            length: vec.byteSize,
             options: .storageModeShared,
             deallocator: nil
         )!
+    }
+    
+    static func buffer(_ arr: NNArray) -> MTLBuffer {
+        return buffer(arr.data)
     }
 }
