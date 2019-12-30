@@ -31,10 +31,14 @@ public class NNArray {
         setAcci()
     }
 
-    init(_ data: [Float], d: [Int]) {
+    init(_ data: [Float], d: [Int] = []) {
         self.data = Pointer()
         self.data.append(contentsOf: data)
-        self.d = d
+        if d == [] {
+            self.d = [data.count]
+        } else {
+            self.d = d
+        }
         setAcci()
     }
 

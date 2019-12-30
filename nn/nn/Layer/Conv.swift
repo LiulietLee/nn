@@ -23,9 +23,9 @@ public class Conv: Layer {
     var row = 0
     var col = 0
     
-    public init(_ width: Int, _ height: Int, count: Int = 1, step: Int = 1, padding: Int = 0, bias: Bool = true) {
+    public init(_ width: Int, _ height: Int = -1, count: Int = 1, step: Int = 1, padding: Int = 0, bias: Bool = true) {
         self.width = width
-        self.height = height
+        self.height = height < 0 ? width : height
         self.count = count
         self.step = step
         self.padding = padding
