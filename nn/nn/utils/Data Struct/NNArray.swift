@@ -8,26 +8,35 @@
 
 import Foundation
 
-public class NNArray {
+public class NNArray: NSObject {
     public typealias Pointer = LLVector<Float>
     
-    public let data: Pointer!
+    public var data: Pointer!
     var d = [Int]()
     var acci = [Int]()
     
-    public init() {
+    public override init() {
         data = Pointer()
     }
     
     public init(_ d: Int..., initValue: Float = 0.0) {
         data = Pointer(repeaing: initValue, count: d.reduce(1, *))
         self.d = d
+        super.init()
+        setAcci()
+    }
+    
+    public init(_ d: [Int], initValue: Float = 0.0) {
+        data = Pointer(repeaing: initValue, count: d.reduce(1, *))
+        self.d = d
+        super.init()
         setAcci()
     }
     
     private init(_ data: Pointer, d: [Int]) {
         self.data = data
         self.d = d
+        super.init()
         setAcci()
     }
 
@@ -39,6 +48,7 @@ public class NNArray {
         } else {
             self.d = d
         }
+        super.init()
         setAcci()
     }
 

@@ -8,16 +8,15 @@
 
 import Foundation
 
-public class Dense: Layer {
+public class Dense: BaseLayer {
     var inFeatures = 0
     var outFeatures = 0
     var needBias = false
     var relu = true
-    var bias = NNArray()
+    @objc dynamic var bias = NNArray()
     
-    public var score = NNArray()
     public var interScore = NNArray()
-    var param: Matrix
+    @objc dynamic var param: Matrix
     
     public init(inFeatures: Int, outFeatures: Int, bias: Bool = true, relu: Bool = true) {
         self.inFeatures = inFeatures
@@ -27,10 +26,12 @@ public class Dense: Layer {
         self.bias = NNArray(outFeatures, initValue: needBias ? 0.0001 : Float(0.0))
         param = Matrix(row: outFeatures, col: inFeatures)
         interScore = NNArray(outFeatures)
+
+        super.init()
         score = NNArray(outFeatures)
     }
     
-    public func forward(_ input: NNArray) -> NNArray {
+    public override func forward(_ input: NNArray) -> NNArray {
         if Core.device != nil {
             forwardWithMetal(input)
         } else {
@@ -44,7 +45,7 @@ public class Dense: Layer {
         return score
     }
     
-    public func backward(_ input: NNArray, delta: NNArray, rate: Float = 0.1) -> NNArray {
+    public override func backward(_ input: NNArray, delta: NNArray, rate: Float = 0.1) -> NNArray {
         if Core.device != nil {
             return backwardWithMetal(input, delta, rate)
         }

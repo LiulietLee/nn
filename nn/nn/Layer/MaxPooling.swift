@@ -8,10 +8,8 @@
 
 import Foundation
 
-public class MaxPooling: Layer {
-    
-    public var score = NNArray()
-    
+public class MaxPooling: BaseLayer {
+        
     struct SwitchMapper {
         var oi: Int, oj: Int, ix: Int, iy: Int, k: Int        
     }
@@ -30,7 +28,7 @@ public class MaxPooling: Layer {
         self.step = step
     }
     
-    public func forward(_ input: NNArray) -> NNArray {
+    public override func forward(_ input: NNArray) -> NNArray {
         if row == 0 {
             precondition(
                 (input.d[0] - width) % step == 0 &&
@@ -74,7 +72,7 @@ public class MaxPooling: Layer {
         return score
     }
     
-    public func backward(_ input: NNArray, delta: NNArray, rate: Float) -> NNArray {
+    public override func backward(_ input: NNArray, delta: NNArray, rate: Float) -> NNArray {
         let da = NNArray(input.count, initValue: 0.0).dim(input.d)
         delta.dim(score.d)
         

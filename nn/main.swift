@@ -11,100 +11,86 @@ import MetalPerformanceShaders
 
 Core.device = MTLCreateSystemDefaultDevice()
 
-let net = Sequential()
+var net = Sequential()
 
 net.add([
-    Conv(3, 3, count: 3, padding: 1),
-    Conv(1, 1),
+    Conv(2, count: 3),
+    Conv(2, count: 3),
+    Conv(3),
     MaxPooling(),
-    Dense(inFeatures: 4, outFeatures: 4)
+    Dense(inFeatures: 9, outFeatures: 5),
+    Dense(inFeatures: 5, outFeatures: 5),
+    Dense(inFeatures: 5, outFeatures: 2)
 ])
 
-//net.add([
-//    Conv(2, 2, step: 2)
-//])
+let img = NNArray(10, 10, 3, initValue: 1.0)
+let label = NNArray([1.0, 0.0])
 
-let img = NNArray(32, 32, 3, initValue: 1.0)
-let label = NNArray([1, 0, 0, 0], d: [4])
+func train() {
+    for i in 0..<20 {
+        let score = net.forward(img)
+        let loss = net.loss(label)
+        net.backward(label, rate: 0.1)
+        
+        print("\(i) loss: \(loss) score: \(score.map { $0 })")
+    }
+    
+    ModelStorage.save(net, path: "a.txt")
+}
 
-let start = DispatchTime.now()
-
-for i in 0..<100 {
+func test() {
+    ModelStorage.load(net, path: "a.txt")
+    
     let score = net.forward(img)
     let loss = net.loss(label)
-    net.backward(label, rate: 0.1)
-
-    print("epoch \(i): loss: \(loss), score: \(score.map() { $0 })")
+    print("test: - loss: \(loss) score: \(score.map { $0 })")
 }
 
-let end = DispatchTime.now()
+test()
 
-let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds
-let timeInterval = Double(nanoTime) / 1_000_000_000
-
-print("\(timeInterval) seconds")
+//train()
 
 /*
-let reader = ImageReader()
+ let reader = Cifar10Reader(root: "/Users/liulietlee/Developer/tf/cifar/cifar")
 
-let basePath = "/Users/liulietlee/Desktop/test/"
+print("train.")
 
-func gen(_ path: String, _ label: Int) -> (NNArray, NNArray) {
-    let realPath = basePath + path
-    guard let img = reader.cifar10Image(path: realPath) else {
-        exit(EXIT_FAILURE)
-    }
-    let labels = NNArray((0..<10).map() { $0 == label ? 1.0: 0.0 }, d: [10])
-    return (img, labels)
-}
-
-let trainSet = [
-    gen("0_cat.png", 3),
-    gen("1_ship.png", 9),
-    gen("2_ship.png", 9),
-    gen("3_airplane.png", 0),
-    gen("4_frog.png", 6),
-    gen("5_frog.png", 6),
-    gen("6_automobile.png", 1),
-    gen("7_frog.png", 6),
-    gen("8_cat.png", 3),
-    gen("9_automobile.png", 1)
-]
-
-let testSet = [
-    gen("10_airplane.png", 0),
-    gen("15_ship.png", 9),
-    gen("19_frog.png", 6)
-]
-
-for i in 0..<50 {
-    var loss = Float()
+for i in 0..<120 {
+    var runningLoss = 0.0
     
-    for (img, label) in trainSet {
-        let start = DispatchTime.now()
-        let _ = net.forward(img)
-        loss += net.loss(label)
-        net.backward(label, rate: 0.1)
-        let end = DispatchTime.now()
-        
-        let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds
-        let timeInterval = Double(nanoTime) / 1_000_000_000
-
-        print("\(timeInterval) seconds")
-    }
-
-    print("epoch \(i): loss: \(loss / Float(trainSet.count))")
-}
-
-for (img, _) in testSet {
-    let score = net.forward(img)
-    print(score)
-    var idx = 0
-    for i in 0..<score.count {
-        if score[i] > score[idx] {
-            idx = i
+    for index in 0..<20 {
+        autoreleasepool {
+            let (input, n) = reader.getTest(index)!
+            let label = NNArray((0..<10).map { $0 == n ? 1.0 : 0.0 })
+            let _ = net.forward(input)
+            let loss = net.loss(label)
+            net.backward(label, rate: 0.001)
+            runningLoss += Double(loss)
         }
     }
-    print(idx)
+
+    print("[\(i)] loss: \(runningLoss / 20)")
+    runningLoss = 0.0
 }
+
+print("test.")
+
+var count = 0
+for index in 0..<20 {
+    let (input, label) = reader.getTest(index)!
+    let score = net.forward(input)
+    var maxi = 0
+    for i in 1..<score.count {
+        if score[i] > score[maxi] {
+            maxi = i
+        }
+    }
+    print("[\(index)] pred: \(maxi), label: \(label)")
+    print(score.map{ $0 })
+    if maxi == label {
+        count += 1
+    }
+}
+
+print("\(count)/20")
 */

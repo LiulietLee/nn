@@ -29,8 +29,8 @@ public class LLVector<T> {
     
     public var pointer: Pointer!
     var length: Int!
-    private(set) var capacity: Int!
-    private var stride: Int!
+    var capacity: Int!
+    var stride: Int!
     
     public var byteCount: Int { return stride * length }
     public var byteSize: Int {

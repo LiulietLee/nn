@@ -12,4 +12,6 @@ public protocol Layer {
     var score: NNArray { get set }
     func forward(_ input: NNArray) -> NNArray
     func backward(_ input: NNArray, delta: NNArray, rate: Float) -> NNArray
+    func save(to file: UnsafeMutablePointer<FILE>)
+    func load(from file: UnsafeMutablePointer<FILE>)
 }

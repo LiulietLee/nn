@@ -8,20 +8,20 @@
 
 import Foundation
 
-public class Conv: Layer {
-    public var score = NNArray()
-    var convCore = NNArray()
-    var bias = NNArray()
-    
+public class Conv: BaseLayer {
+
+    @objc dynamic var convCore: NNArray = NNArray()
+    @objc dynamic var bias = NNArray()
+    @objc dynamic var row = 0
+    @objc dynamic var col = 0
+    @objc dynamic var depth = 0
+
     var needBias = true
     var width = 0
     var height = 0
-    var depth = 0
     var count = 0
     var step = 0
     var padding = 0
-    var row = 0
-    var col = 0
     
     public init(_ width: Int, _ height: Int = -1, count: Int = 1, step: Int = 1, padding: Int = 0, bias: Bool = true) {
         self.width = width
@@ -42,7 +42,7 @@ public class Conv: Layer {
         return 0 <= x && x < b[0] && 0 <= y && y < b[1]
     }
     
-    public func forward(_ input: NNArray) -> NNArray {
+    public override func forward(_ input: NNArray) -> NNArray {
         if row == 0 {
             precondition(
                 (input.d[0] - width + padding * 2) % step == 0 &&
@@ -81,7 +81,7 @@ public class Conv: Layer {
         return score
     }
     
-    public func backward(_ input: NNArray, delta: NNArray, rate: Float = 0.1) -> NNArray {
+    public override func backward(_ input: NNArray, delta: NNArray, rate: Float = 0.1) -> NNArray {
         let da = NNArray(input.count, initValue: 0.0)
         da.dim(input.d)
         delta.dim(score.d)

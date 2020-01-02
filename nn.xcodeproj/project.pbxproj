@@ -22,6 +22,10 @@
 		4F8661CA23B7B6A600629889 /* maxpooling_m.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661C923B7B6A600629889 /* maxpooling_m.metal */; };
 		4F8661CC23B7B6B500629889 /* MaxPooling+Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661CB23B7B6B500629889 /* MaxPooling+Metal.swift */; };
 		4F8661D023B8884200629889 /* Cifar10Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661CF23B8884200629889 /* Cifar10Reader.swift */; };
+		4F8661E523B9E63A00629889 /* ModelStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661E423B9E63A00629889 /* ModelStorage.swift */; };
+		4F8661EB23BA49C300629889 /* BaseLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661EA23BA49C300629889 /* BaseLayer.swift */; };
+		4F8661ED23BA4B2D00629889 /* BaseContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661EC23BA4B2D00629889 /* BaseContainer.swift */; };
+		4F8661F123BCC84B00629889 /* Storagable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661F023BCC84B00629889 /* Storagable.swift */; };
 		4F9060FC23B49D2400B26B12 /* conv_m.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4F9060FB23B49D2400B26B12 /* conv_m.metal */; };
 		4F9060FE23B49D3F00B26B12 /* Conv+Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F9060FD23B49D3F00B26B12 /* Conv+Metal.swift */; };
 		4FA87003239D404C0043D957 /* NNArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FA87002239D404C0043D957 /* NNArray.swift */; };
@@ -61,6 +65,10 @@
 		4F8661C923B7B6A600629889 /* maxpooling_m.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = maxpooling_m.metal; sourceTree = "<group>"; };
 		4F8661CB23B7B6B500629889 /* MaxPooling+Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaxPooling+Metal.swift"; sourceTree = "<group>"; };
 		4F8661CF23B8884200629889 /* Cifar10Reader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cifar10Reader.swift; sourceTree = "<group>"; };
+		4F8661E423B9E63A00629889 /* ModelStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelStorage.swift; sourceTree = "<group>"; };
+		4F8661EA23BA49C300629889 /* BaseLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseLayer.swift; sourceTree = "<group>"; };
+		4F8661EC23BA4B2D00629889 /* BaseContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseContainer.swift; sourceTree = "<group>"; };
+		4F8661F023BCC84B00629889 /* Storagable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storagable.swift; sourceTree = "<group>"; };
 		4F9060FB23B49D2400B26B12 /* conv_m.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = conv_m.metal; sourceTree = "<group>"; };
 		4F9060FD23B49D3F00B26B12 /* Conv+Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Conv+Metal.swift"; sourceTree = "<group>"; };
 		4FA87002239D404C0043D957 /* NNArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NNArray.swift; sourceTree = "<group>"; };
@@ -110,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				4F35811C2351F4660037C87D /* Layer.swift */,
+				4F8661EA23BA49C300629889 /* BaseLayer.swift */,
 				4F3581222351FCDC0037C87D /* ReLU.swift */,
 				4F3581182351EF820037C87D /* Dense.swift */,
 				4FA87004239D41710043D957 /* Conv.swift */,
@@ -122,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				4F35811E2351F6ED0037C87D /* Container.swift */,
+				4F8661EC23BA4B2D00629889 /* BaseContainer.swift */,
 				4F35811A2351F4060037C87D /* Sequential.swift */,
 				4F3581202351FA590037C87D /* Loss.swift */,
 			);
@@ -131,7 +141,7 @@
 		4F29062C2393860C00ABCF34 /* utils */ = {
 			isa = PBXGroup;
 			children = (
-				4F8661CE23B887FD00629889 /* Reader */,
+				4F8661CE23B887FD00629889 /* IO */,
 				4F8661CD23B887AB00629889 /* Data Struct */,
 				4F16BA9823AF210E00E905D3 /* Metal */,
 			);
@@ -183,13 +193,31 @@
 			path = "Data Struct";
 			sourceTree = "<group>";
 		};
-		4F8661CE23B887FD00629889 /* Reader */ = {
+		4F8661CE23B887FD00629889 /* IO */ = {
+			isa = PBXGroup;
+			children = (
+				4F8661E723B9F44200629889 /* Image */,
+				4F8661E623B9F43900629889 /* Model */,
+			);
+			path = IO;
+			sourceTree = "<group>";
+		};
+		4F8661E623B9F43900629889 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				4F8661E423B9E63A00629889 /* ModelStorage.swift */,
+				4F8661F023BCC84B00629889 /* Storagable.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		4F8661E723B9F44200629889 /* Image */ = {
 			isa = PBXGroup;
 			children = (
 				4FBC046E23ACF8CA0072B9BE /* ImageReader.swift */,
 				4F8661CF23B8884200629889 /* Cifar10Reader.swift */,
 			);
-			path = Reader;
+			path = Image;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -254,6 +282,7 @@
 				4F9060FE23B49D3F00B26B12 /* Conv+Metal.swift in Sources */,
 				4FA87003239D404C0043D957 /* NNArray.swift in Sources */,
 				4F35811F2351F6ED0037C87D /* Container.swift in Sources */,
+				4F8661EB23BA49C300629889 /* BaseLayer.swift in Sources */,
 				4FA87005239D41710043D957 /* Conv.swift in Sources */,
 				4F3581162351EB190037C87D /* Matrix.swift in Sources */,
 				4F8661D023B8884200629889 /* Cifar10Reader.swift in Sources */,
@@ -261,15 +290,18 @@
 				4F3581212351FA590037C87D /* Loss.swift in Sources */,
 				4F35811D2351F4660037C87D /* Layer.swift in Sources */,
 				4F8661CC23B7B6B500629889 /* MaxPooling+Metal.swift in Sources */,
+				4F8661E523B9E63A00629889 /* ModelStorage.swift in Sources */,
 				4F8661C823B7AFBF00629889 /* ReLU+Metal.swift in Sources */,
 				4FA9E9BE23A21590003C6730 /* LLVector.swift in Sources */,
 				4F3581232351FCDC0037C87D /* ReLU.swift in Sources */,
 				4F16BAA323AF256D00E905D3 /* Dense+Metal.swift in Sources */,
 				4F16BAA123AF23A700E905D3 /* dense_m.metal in Sources */,
 				4F8661CA23B7B6A600629889 /* maxpooling_m.metal in Sources */,
+				4F8661F123BCC84B00629889 /* Storagable.swift in Sources */,
 				4F8661C623B7AFA300629889 /* relu_m.metal in Sources */,
 				4FBC046F23ACF8CA0072B9BE /* ImageReader.swift in Sources */,
 				4FBF5CB423B10071006763CB /* Core.swift in Sources */,
+				4F8661ED23BA4B2D00629889 /* BaseContainer.swift in Sources */,
 				4FC30B6223AB821C00D27427 /* MaxPooling.swift in Sources */,
 				4F35811B2351F4060037C87D /* Sequential.swift in Sources */,
 				4F35810F2351B1050037C87D /* main.swift in Sources */,

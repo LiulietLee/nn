@@ -10,6 +10,8 @@ import Foundation
 
 public protocol Container {
     func forward(_ input: NNArray) -> NNArray
-    func backward(_ label: NNArray, rate: Float, delta: NNArray)
+    @discardableResult func backward(_ label: NNArray, rate: Float, delta: NNArray) -> NNArray
     func loss(_ label: NNArray) -> Float
+    func save(to file: UnsafeMutablePointer<FILE>)
+    func load(from file: UnsafeMutablePointer<FILE>)
 }

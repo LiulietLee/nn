@@ -52,7 +52,7 @@ extension Dense {
     }
     
     func forwardWithMetal(_ input: NNArray) {
-        let cp = param.copy()
+        let cp: Matrix = param.copy()
         matrixMul(matrix: cp, input: input)
         matrixSum(matrix: cp)
     }

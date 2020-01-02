@@ -8,24 +8,24 @@
 
 import Foundation
 
-public class Sequential: Container {
-    private var layers: [Layer] = []
+public class Sequential: BaseContainer {
+    @objc dynamic private var layers: [BaseLayer] = []
     private var score = NNArray()
     private var input = NNArray()
     
     public var lossClass = Loss.mod2.self
     
-    public func add(_ layer: Layer) {
+    public func add(_ layer: BaseLayer) {
         layers.append(layer)
     }
     
-    public func add(_ layers: [Layer]) {
+    public func add(_ layers: [BaseLayer]) {
         self.layers.append(contentsOf: layers)
     }
     
-    public func forward(_ input: NNArray) -> NNArray {
+    public override func forward(_ input: NNArray) -> NNArray {
         self.input = input.copy()
-        var input = input.copy()
+        var input: NNArray = input.copy()
         for l in layers {
             autoreleasepool {
                 input = l.forward(input)
@@ -35,7 +35,8 @@ public class Sequential: Container {
         return score
     }
     
-    public func backward(_ label: NNArray, rate: Float = 0.1, delta: NNArray = NNArray()) {
+    @discardableResult
+    public override func backward(_ label: NNArray, rate: Float = 0.1, delta: NNArray = NNArray()) -> NNArray {
         var r = delta.isEmpty
             ? lossClass.delta(score: score, label: label)
             : delta
@@ -48,9 +49,10 @@ public class Sequential: Container {
                 }
             }
         }
+        return r
     }
     
-    public func loss(_ label: NNArray) -> Float {
+    public override func loss(_ label: NNArray) -> Float {
         return lossClass.loss(score: score, label: label)
     }
 }

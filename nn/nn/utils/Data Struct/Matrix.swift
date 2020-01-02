@@ -8,21 +8,17 @@
 
 import Foundation
 
-public class Matrix {
-    public var _data = NNArray()
+public class Matrix: NSObject {
+    @objc dynamic public var _data = NNArray()
     
-    private(set) var row: Int = 0
-    private(set) var col: Int = 0
+    var row: Int { return _data.d[0] }
+    var col: Int { return _data.d[1] }
     
     public init(row: Int = 1, col: Int = 1) {
-        self.row = row
-        self.col = col
         _data = NNArray(row, col, initValue: 0.0001)
     }
     
-    private init(_ data: NNArray) {
-        self.row = data.d[0]
-        self.col = data.d[1]
+    init(_ data: NNArray) {
         self._data = data
     }
     
