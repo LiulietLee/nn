@@ -25,6 +25,7 @@ public class Dense: BaseLayer {
         self.relu = relu
         self.bias = NNArray(outFeatures, initValue: 0.0)
         param = Matrix(row: outFeatures, col: inFeatures)
+        param._data.normalRandn(n: param.row + param.col)
         interScore = NNArray(outFeatures)
 
         super.init()

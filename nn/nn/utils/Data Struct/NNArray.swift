@@ -15,6 +15,10 @@ public class NNArray: NSObject {
     var d = [Int]()
     var acci = [Int]()
     
+    public override var description: String {
+        return "\(map { $0 })"
+    }
+    
     public override init() {
         data = Pointer()
     }

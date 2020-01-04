@@ -10,8 +10,9 @@ import Foundation
 
 extension NNArray {
     @discardableResult
-    public func normalRandn(sigma: Float = 1.0, mu: Float = 0.0) -> NNArray {
+    public func normalRandn(sigma: Float = 1.0, mu: Float = 0.0, n: Int) -> NNArray {
         let len = count - count % 2
+        let scale = sqrt(2.0 / Float(n))
         
         for i in stride(from: 0, to: len, by: 2) {
             var x = Float(0.0), y = Float(0.0), rsq = Float(0.0), f = Float(0.0)
@@ -21,32 +22,10 @@ extension NNArray {
                 rsq = x * x + y * y
             } while rsq >= 1.0 || rsq == 0.0
             f = sqrt(-2.0 * log(rsq) / rsq)
-            self[i] = sigma * (x * f) + mu
-            self[i + 1] = sigma * (y * f) + mu
+            self[i] = (sigma * (x * f) + mu) * scale
+            self[i + 1] = (sigma * (y * f) + mu) * scale
         }
-        
-//       int i;
-//       int m = n + n % 2;
-//       double* values = (double*)calloc(m,sizeof(double));
-//       double average, deviation;
-    
-//       if ( values )
-//       {
-//           for ( i = 0; i < m; i += 2 )
-//           {
-//               double x,y,rsq,f;
-//               do {
-//                   x = 2.0 * rand() / (double)RAND_MAX - 1.0;
-//                   y = 2.0 * rand() / (double)RAND_MAX - 1.0;
-//                   rsq = x * x + y * y;
-//               }while( rsq >= 1. || rsq == 0. );
-//               f = sqrt( -2.0 * log(rsq) / rsq );
-//               values[i]   = x * f;
-//               values[i+1] = y * f;
-//           }
-//       }
 
         return self
     }
-
 }

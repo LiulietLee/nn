@@ -35,7 +35,7 @@ public class Conv: BaseLayer {
     
     func setDepth(_ depth: Int) {
         self.depth = depth
-        convCore = NNArray(width, height, depth, count, initValue: 0.0001)
+        convCore = NNArray(width, height, depth, count)
     }
     
     private func inBound(_ x: Int, _ y: Int, _ b: [Int]) -> Bool {
@@ -51,6 +51,7 @@ public class Conv: BaseLayer {
             row = (input.d[0] - width + padding * 2) / step + 1
             col = (input.d[1] - height + padding * 2) / step + 1
             setDepth(input.d[2])
+            convCore.normalRandn(n: input.count + row * col * count)
         }
         score = NNArray(row, col, count)
         
