@@ -38,29 +38,21 @@ extension ModelStorage {
             let property = plist?[Int(i)]
             let cname = property_getName(property!)
             let name = String(cString: cname)
-//            print("property：\(name)")
             
             let val = children.first(where: { $0.label == name })!.value
             if let value = val as? Storagable {
-//                print(value)
                 value.save(to: file)
             } else if let layers = val as? [Layer] {
-//                print(layers)
                 for layer in layers {
-//                    print(layer)
                     layer.save(to: file)
                 }
             } else if let layer = val as? Layer {
-//                print(layer)
                 layer.save(to: file)
             } else if let containers = val as? [Container] {
-//                print(containers)
                 for container in containers {
-//                    print(container)
                     container.save(to: file)
                 }
             } else if let container = val as? Container {
-//                print(container)
                 container.save(to: file)
             }
         }
@@ -78,29 +70,22 @@ extension ModelStorage {
             let property = plist[Int(i)]
             let cname = property_getName(property)
             let name = String(cString: cname)
-//            print("property：\(name)")
             
             let value = children.first(where: { $0.label == name })!.value
             if let val = value as? Storagable {
-//                print(val)
                 c.setValue(type(of: val).load(from: file), forKey: name)
             } else if let container = value as? Container {
-//                print(container)
                 container.load(from: file)
             } else if let containers = value as? [Container] {
-//                print(containers)
                 for i in 0..<containers.count {
                     print(containers[i])
                     containers[i].load(from: file)
                 }
             } else if let layers = value as? [Layer] {
-//                print(layers)
                 for i in 0..<layers.count {
-//                    print(layers[i])
                     layers[i].load(from: file)
                 }
             } else if let layer = value as? Layer {
-//                print(layer)
                 layer.load(from: file)
             }
         }
