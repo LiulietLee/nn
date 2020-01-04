@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4F16BAA123AF23A700E905D3 /* dense_m.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4F16BAA023AF23A700E905D3 /* dense_m.metal */; };
 		4F16BAA323AF256D00E905D3 /* Dense+Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F16BAA223AF256D00E905D3 /* Dense+Metal.swift */; };
+		4F276C9D23C0754000D0403A /* Forwardable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F276C9C23C0754000D0403A /* Forwardable.swift */; };
 		4F35810F2351B1050037C87D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F35810E2351B1050037C87D /* main.swift */; };
 		4F3581162351EB190037C87D /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3581152351EB190037C87D /* Matrix.swift */; };
 		4F3581192351EF820037C87D /* Dense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3581182351EF820037C87D /* Dense.swift */; };
@@ -51,6 +52,7 @@
 /* Begin PBXFileReference section */
 		4F16BAA023AF23A700E905D3 /* dense_m.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = dense_m.metal; sourceTree = "<group>"; };
 		4F16BAA223AF256D00E905D3 /* Dense+Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dense+Metal.swift"; sourceTree = "<group>"; };
+		4F276C9C23C0754000D0403A /* Forwardable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Forwardable.swift; sourceTree = "<group>"; };
 		4F35810B2351B1050037C87D /* nn */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nn; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F35810E2351B1050037C87D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		4F3581152351EB190037C87D /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
@@ -112,6 +114,16 @@
 				4F8661C923B7B6A600629889 /* maxpooling_m.metal */,
 			);
 			path = Compute;
+			sourceTree = "<group>";
+		};
+		4F276C9B23C0750500D0403A /* forwardable */ = {
+			isa = PBXGroup;
+			children = (
+				4F276C9C23C0754000D0403A /* Forwardable.swift */,
+				4F29062B239385F800ABCF34 /* Container */,
+				4F29062A239385D800ABCF34 /* Layer */,
+			);
+			path = forwardable;
 			sourceTree = "<group>";
 		};
 		4F29062A239385D800ABCF34 /* Layer */ = {
@@ -177,8 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				4F29062C2393860C00ABCF34 /* utils */,
-				4F29062B239385F800ABCF34 /* Container */,
-				4F29062A239385D800ABCF34 /* Layer */,
+				4F276C9B23C0750500D0403A /* forwardable */,
 			);
 			path = nn;
 			sourceTree = "<group>";
@@ -283,6 +294,7 @@
 				4FA87003239D404C0043D957 /* NNArray.swift in Sources */,
 				4F35811F2351F6ED0037C87D /* Container.swift in Sources */,
 				4F8661EB23BA49C300629889 /* BaseLayer.swift in Sources */,
+				4F276C9D23C0754000D0403A /* Forwardable.swift in Sources */,
 				4FA87005239D41710043D957 /* Conv.swift in Sources */,
 				4F3581162351EB190037C87D /* Matrix.swift in Sources */,
 				4F8661D023B8884200629889 /* Cifar10Reader.swift in Sources */,

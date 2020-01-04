@@ -14,7 +14,7 @@ public class BaseContainer: NSObject, Container {
     }
     
     @discardableResult
-    public func backward(_ label: NNArray, rate: Float, delta: NNArray) -> NNArray {
+    public func backward(_ label: NNArray, delta: NNArray, rate: Float) -> NNArray {
         return delta
     }
     

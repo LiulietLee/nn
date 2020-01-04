@@ -9,7 +9,7 @@
 import Foundation
 
 public class BaseLayer: NSObject, Layer {
-    
+
     public var score = NNArray()
     
     public func forward(_ input: NNArray) -> NNArray {

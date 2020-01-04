@@ -36,7 +36,7 @@ public class Sequential: BaseContainer {
     }
     
     @discardableResult
-    public override func backward(_ label: NNArray, rate: Float = 0.1, delta: NNArray = NNArray()) -> NNArray {
+    public override func backward(_ label: NNArray, delta: NNArray = NNArray(), rate: Float = 0.1) -> NNArray {
         var r = delta.isEmpty
             ? lossClass.delta(score: score, label: label)
             : delta
