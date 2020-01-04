@@ -23,7 +23,7 @@ public class Dense: BaseLayer {
         self.outFeatures = outFeatures
         needBias = bias
         self.relu = relu
-        self.bias = NNArray(outFeatures, initValue: needBias ? 0.0001 : Float(0.0))
+        self.bias = NNArray(outFeatures, initValue: 0.0)
         param = Matrix(row: outFeatures, col: inFeatures)
         interScore = NNArray(outFeatures)
 

@@ -15,7 +15,7 @@ public class Matrix: NSObject {
     var col: Int { return _data.d[1] }
     
     public init(row: Int = 1, col: Int = 1) {
-        _data = NNArray(row, col, initValue: 0.0001)
+        _data = NNArray(row, col)
     }
     
     init(_ data: NNArray) {

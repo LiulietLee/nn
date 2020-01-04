@@ -9,6 +9,9 @@
 import Foundation
 import MetalPerformanceShaders
 
+let a = NNArray(10).normalRandn()
+print(a.map { $0 })
+/*
 Core.device = MTLCreateSystemDefaultDevice()
 
 var net = Sequential()
@@ -47,9 +50,8 @@ func test() {
 }
 
 test()
-
 //train()
-
+*/
 /*
  let reader = Cifar10Reader(root: "/Users/liulietlee/Developer/tf/cifar/cifar")
 
