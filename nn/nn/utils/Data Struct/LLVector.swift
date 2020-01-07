@@ -32,6 +32,8 @@ public class LLVector<T> {
     var capacity: Int!
     var stride: Int!
     
+    public var freeable = true
+    
     public var byteCount: Int { return stride * length }
     public var byteSize: Int {
         let alignment = Int(getpagesize())
@@ -82,6 +84,10 @@ public class LLVector<T> {
         let addr = __ptrcpy(pointer, stride * capacity)
         let newVector = LLVector(addr, length, capacity)
         return newVector
+    }
+    
+    public func zero() {
+        memset(pointer, 0, byteSize)
     }
 }
 
@@ -319,7 +325,9 @@ extension LLVector {
     }
     
     private func __deallocate(_ ptr: Pointer) {
-        ptr.deallocate()
+        if freeable {
+            ptr.deallocate()
+        }
     }
     
     private func __fill_memory(_ ptr: Pointer, _ len: Int, _ val: T) {

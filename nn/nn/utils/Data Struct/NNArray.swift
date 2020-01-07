@@ -15,9 +15,7 @@ public class NNArray: NSObject {
     var d = [Int]()
     var acci = [Int]()
     
-    public override var description: String {
-        return "\(map { $0 })"
-    }
+    public override var description: String { return "\(map { $0 })" }
     
     public override init() {
         data = Pointer()
@@ -37,7 +35,7 @@ public class NNArray: NSObject {
         setAcci()
     }
     
-    private init(_ data: Pointer, d: [Int]) {
+    public init(_ data: Pointer, d: [Int]) {
         self.data = data
         self.d = d
         super.init()
@@ -101,6 +99,20 @@ public class NNArray: NSObject {
         set(newValue) {
             data[index] = newValue
         }
+    }
+    
+    public func subArray(at index: Int..., length: Int = 0, d: [Int] = []) -> NNArray {
+        var idx = index
+        while idx.count < self.d.count {
+            idx.append(0)
+        }
+        let addr = getAddr(idx)
+        let ptr = data.pointer.advanced(by: addr * MemoryLayout<Float>.stride)
+        let len = length == 0 ? acci[index.count - 1] : length
+        let vec = LLVector<Float>(ptr, len, len)
+        vec.freeable = false
+        let d = d.isEmpty ? [len] : d
+        return NNArray(vec, d: d)
     }
 }
 
