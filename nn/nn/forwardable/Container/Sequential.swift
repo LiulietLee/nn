@@ -13,7 +13,16 @@ public class Sequential: BaseContainer {
     private var score = NNArray()
     private var input = NNArray()
     
-    public var lossClass = Loss.mod2.self
+    public var lossClass = Loss.svm2.self
+    
+    public override init() {
+        super.init()
+    }
+    
+    public init(_ layers: [BaseLayer]) {
+        super.init()
+        add(layers)
+    }
     
     public func add(_ layer: BaseLayer) {
         layers.append(layer)
@@ -35,21 +44,46 @@ public class Sequential: BaseContainer {
         return score
     }
     
+    public override func predict(_ input: NNArray) -> NNArray {
+        var input = input
+        for l in layers {
+            autoreleasepool {
+                input = l.predict(input)
+            }
+        }
+        score = input
+        return score
+    }
+    
     @discardableResult
-    public override func backward(_ label: NNArray, delta: NNArray = NNArray(), rate: Float = 0.1) -> NNArray {
+    public override func backward(_ label: NNArray, delta: NNArray = NNArray()) -> NNArray {
         var r = delta.isEmpty
             ? lossClass.delta(score: score, label: label)
             : delta
         for i in (0..<layers.count).reversed() {
             autoreleasepool {
                 if i == 0 {
-                    r = layers[i].backward(input, delta: r, rate: rate)
+                    r = layers[i].backward(input, delta: r)
                 } else {
-                    r = layers[i].backward(layers[i - 1].score, delta: r, rate: rate)
+                    r = layers[i].backward(layers[i - 1].score, delta: r)
                 }
             }
         }
         return r
+    }
+    
+    public override func zeroGrad() {
+        let pool = ThreadPool(count: layers.count)
+        pool.run { i in
+            self.layers[i].zeroGrad()
+        }
+    }
+    
+    public override func step(lr: Float, momentum: Float) {
+        let pool = ThreadPool(count: layers.count)
+        pool.run { i in
+            self.layers[i].step(lr: lr, momentum: momentum)
+        }
     }
     
     public override func loss(_ label: NNArray) -> Float {

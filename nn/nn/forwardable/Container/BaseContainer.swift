@@ -9,14 +9,22 @@
 import Foundation
 
 public class BaseContainer: NSObject, Container {
+    
     public func forward(_ input: NNArray) -> NNArray {
         return input
     }
     
+    public func predict(_ input: NNArray) -> NNArray {
+        return forward(input)
+    }
+    
     @discardableResult
-    public func backward(_ label: NNArray, delta: NNArray, rate: Float) -> NNArray {
+    public func backward(_ label: NNArray, delta: NNArray = NNArray()) -> NNArray {
         return delta
     }
+    
+    public func step(lr: Float, momentum: Float) {}
+    public func zeroGrad() {}
     
     public func loss(_ label: NNArray) -> Float {
         return 0.0

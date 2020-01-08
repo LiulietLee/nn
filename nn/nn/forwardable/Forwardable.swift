@@ -10,8 +10,11 @@ import Foundation
 
 public protocol Forwardable {
     func forward(_ input: NNArray) -> NNArray
+    func predict(_ input: NNArray) -> NNArray
     @discardableResult
-    func backward(_ label: NNArray, delta: NNArray, rate: Float) -> NNArray
+    func backward(_ label: NNArray, delta: NNArray) -> NNArray
+    func step(lr: Float, momentum: Float)
+    func zeroGrad()
     func save(to file: UnsafeMutablePointer<FILE>)
     func load(from file: UnsafeMutablePointer<FILE>)
 }

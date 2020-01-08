@@ -11,10 +11,11 @@ using namespace metal;
 
 kernel void dense_matrix_mul(device float *matrix,
                              device const float *input,
-                             device const int &inter_col,
-                             uint index [[ thread_position_in_grid ]])
+                             device const int &col,
+                             uint2 gid [[ thread_position_in_grid ]])
 {
-    matrix[index] *= input[index % inter_col];
+    uint index = gid[0] * col + gid[1];
+    matrix[index] *= input[index % col];
 }
 
 kernel void dense_matrix_sum(device const float *matrix,
@@ -40,7 +41,6 @@ kernel void dense_matrix_sum(device const float *matrix,
 }
 
 kernel void dense_backward_1(device const bool &need_relu,
-                             device const float &rate,
                              device const int &row,
                              device const int &col,
                              device const float *matrix,
@@ -51,7 +51,7 @@ kernel void dense_backward_1(device const bool &need_relu,
 {
     da[j] = 0.0;
     for (int i = 0; i < row; i++) {
-        float d = delta[i] * matrix[i * col + j] * rate;
+        float d = delta[i] * matrix[i * col + j];
         if (need_relu && inter_score[i] < 0.0) {
             da[j] += d * 0.001;
         } else {
@@ -61,26 +61,25 @@ kernel void dense_backward_1(device const bool &need_relu,
 }
 
 kernel void dense_backward_2(device const bool &need_relu,
-                             device const float &rate,
                              device const int &col,
                              device const float *delta,
                              device const float *input,
                              device const float *inter_score,
-                             device float *matrix,
-                             device float *bi,
-                             uint index [[ thread_position_in_grid ]])
+                             device float *dparam,
+                             device float *dbias,
+                             uint2 gid [[ thread_position_in_grid ]])
 {
-    int i = index / col;
-    int j = index % col;
+    int i = gid[0];
+    int j = gid[1];
     
     if (j == 0) {
-        bi[i] -= delta[i] * rate;
+        dbias[i] += delta[i];
     }
     
-    float d = delta[i] * input[j] * rate;
+    float d = delta[i] * input[j];
     if (need_relu && inter_score[i] < 0.0) {
-        matrix[index] -= d * 0.001;
+        dparam[i * col + j] += d * 0.001;
     } else {
-        matrix[index] -= d;
+        dparam[i * col + j] += d;
     }
 }
