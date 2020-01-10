@@ -16,17 +16,14 @@ extension ReLU {
         let queue = Core.queue()
         
         let commandBuffer = queue.makeCommandBuffer()!
-        let encoder = Core.encode(
+        Core.encode(
             commandBuffer: commandBuffer,
             pipeline: pipeline,
-            buffers: Core.buffer(input), Core.buffer(score)
+            buffers: Core.buffer(input), Core.buffer(score),
+            grid: [input.count, 1, 1],
+            thread: [min(input.count, 512), 1, 1]
         )
-        
-        let gridSize = MTLSizeMake(input.count, 1, 1)
-        let threadSize = MTLSizeMake(min(input.count, 512), 1, 1)
-        encoder.dispatchThreads(gridSize, threadsPerThreadgroup: threadSize)
-        encoder.endEncoding()
-        
+                
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
 
@@ -38,22 +35,19 @@ extension ReLU {
     
     func backwardWithMetal(_ input: NNArray, _ delta: NNArray) -> NNArray {
         let da = NNArray(input.count)
-        
+
         let pipeline = Core.pipeline(by: "relu_backward");
         let queue = Core.queue()
         
         let commandBuffer = queue.makeCommandBuffer()!
-        let encoder = Core.encode(
+        Core.encode(
             commandBuffer: commandBuffer,
             pipeline: pipeline,
-            buffers: Core.buffer(input), Core.buffer(delta), Core.buffer(da)
+            buffers: Core.buffer(input), Core.buffer(delta), Core.buffer(da),
+            grid: [input.count, 1, 1],
+            thread: [min(input.count, 512), 1, 1]
         )
-        
-        let gridSize = MTLSizeMake(input.count, 1, 1)
-        let threadSize = MTLSizeMake(min(input.count, 512), 1, 1)
-        encoder.dispatchThreads(gridSize, threadsPerThreadgroup: threadSize)
-        encoder.endEncoding()
-        
+
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
 

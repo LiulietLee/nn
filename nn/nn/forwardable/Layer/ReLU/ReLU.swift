@@ -11,7 +11,7 @@ import Foundation
 public class ReLU: BaseLayer {
     
     public override func forward(_ input: NNArray) -> NNArray {
-        score = input
+        score = input.copy()
         if Core.device != nil {
             return forwardWithMetal(input)
         }
@@ -21,7 +21,7 @@ public class ReLU: BaseLayer {
         return score
     }
     
-    public override func backward(_ input: NNArray, delta: NNArray, rate: Float = 0.1) -> NNArray {
+    public override func backward(_ input: NNArray, delta: NNArray) -> NNArray {
         if Core.device != nil {
             return backwardWithMetal(input, delta)
         } else {
