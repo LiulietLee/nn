@@ -47,6 +47,9 @@ public class Dense: BaseLayer {
             dbias = NNArray(batchSize, outFeatures)
         }
         
+        let inputd = input.d
+        input.dim([batchSize, inFeatures])
+
         if Core.device != nil {
             forwardWithMetal(input)
         } else {
@@ -75,6 +78,7 @@ public class Dense: BaseLayer {
             }
         }
         
+        input.dim(inputd)
         return score
     }
     
@@ -83,7 +87,10 @@ public class Dense: BaseLayer {
             return backwardWithMetal(input, delta)
         }
         
-        let da = NNArray(batchSize, input.count)
+        let inputd = input.d
+        input.dim([batchSize, inFeatures])
+        let da = NNArray(input.count)
+        da.dim(input.d)
         
         for batch in 0..<batchSize {
             if needBias {
@@ -117,6 +124,7 @@ public class Dense: BaseLayer {
             }
         }
         
+        input.dim(inputd)
         return da
     }
     

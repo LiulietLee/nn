@@ -54,9 +54,12 @@ extension Dense {
     
     func forwardWithMetal(_ input: NNArray) {
         let cp = NNArray(batchSize, outFeatures, inFeatures)
-        let size = MemoryLayout<Float>.stride * outFeatures * inFeatures
         for i in 0..<batchSize {
-            memcpy(cp.data.pointer.advanced(by: size * i), param.data.pointer, size)
+            memcpy(
+                cp.subArray(at: i).data.pointer,
+                param.data.pointer,
+                MemoryLayout<Float>.stride * outFeatures * inFeatures
+            )
         }
         matrixMul(matrix: cp, input: input)
         matrixSum(matrix: cp)

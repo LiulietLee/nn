@@ -14,7 +14,7 @@ public protocol AbstractLoss {
 }
 
 public class Loss {
-    public class mod2: AbstractLoss {
+    public class svm2: AbstractLoss {
         public static func loss(score: NNArray, label: NNArray) -> Float {
             var loss: Float = 0.0
             for i in 0..<score.count {
