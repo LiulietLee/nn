@@ -112,11 +112,15 @@ extension Dense {
     }
     
     func backwardWithMetal(_ input: NNArray, _ delta: NNArray) -> NNArray {
+        let inputd = input.d
+        input.dim([batchSize, inFeatures])
         let da = NNArray(input.count)
+        da.dim(input.d)
 
         backward1(da, delta)
         backward2(input, delta)
         
+        input.dim(inputd)
         return da
     }
 }

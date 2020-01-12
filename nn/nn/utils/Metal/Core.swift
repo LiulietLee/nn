@@ -33,12 +33,24 @@ public class Core {
         return device!.makeCommandQueue()!
     }
     
-    static func encode(commandBuffer: MTLCommandBuffer, pipeline: MTLComputePipelineState, buffers: MTLBuffer...) -> MTLComputeCommandEncoder {
+    @discardableResult
+    static func encode(
+        commandBuffer: MTLCommandBuffer,
+        pipeline: MTLComputePipelineState,
+        buffers: MTLBuffer...,
+        grid: [Int],
+        thread: [Int]
+    ) -> MTLComputeCommandEncoder {
         let encoder = commandBuffer.makeComputeCommandEncoder()!
         encoder.setComputePipelineState(pipeline)
         for i in 0..<buffers.count {
             encoder.setBuffer(buffers[i], offset: 0, index: i)
         }
+        let gridSize = MTLSizeMake(grid[0], grid[1], grid[2])
+        let threadSize = MTLSizeMake(thread[0], thread[1], thread[2])
+        encoder.dispatchThreads(gridSize, threadsPerThreadgroup: threadSize)
+        encoder.endEncoding()
+
         return encoder
     }
     
