@@ -10,7 +10,7 @@ import Foundation
 
 extension NNArray {
     @discardableResult
-    public func normalRandn(sigma: Float = 1.0, mu: Float = 0.0, n: Int) -> NNArray {
+    public func normalRandn(sigma: Float = 1.0, mu: Float = 0.0, n: Int = 2) -> NNArray {
         let len = count - count % 2
         let scale = sqrt(2.0 / Float(n))
         
