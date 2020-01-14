@@ -150,3 +150,39 @@ extension NNArray: RandomAccessCollection {
 }
 
 extension NNArray: MutableCollection {}
+
+extension NNArray {
+    /**
+     - Important: Every shape of each buffer need to be the same value.
+     */
+    public static func concat(_ buffers: [NNArray]) -> NNArray {
+        let res = NNArray([[buffers.count], buffers[0].d].flatMap { $0 })
+
+        for i in 0..<buffers.count {
+            buffers[i].data.freeable = false
+            memcpy(
+                res.subArray(at: i).data.pointer,
+                buffers[i].data.pointer,
+                buffers[i].data.byteCount
+            )
+        }
+        
+        var d = buffers[0].d
+        d[0] *= buffers.count
+        res.dim(d)
+        
+        return res
+    }
+}
+
+extension NNArray {
+    public func indexOfMax() -> Int {
+        var maxi = 0
+        for i in 0..<count {
+            if self[maxi] < self[i] {
+                maxi = i
+            }
+        }
+        return maxi
+    }
+}

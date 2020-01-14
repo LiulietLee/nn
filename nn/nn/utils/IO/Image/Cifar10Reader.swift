@@ -19,6 +19,13 @@ public class Cifar10Reader: ImageReader {
     var trainIndex = 0
     var testIndex = 0
     
+    var batchSize = 0
+    
+    public enum SetType {
+        case train
+        case test
+    }
+    
     /**
      - Description: Expected file structure:
      ```
@@ -34,7 +41,8 @@ public class Cifar10Reader: ImageReader {
      |   |   |-- ...
      ```
      */
-    public init(root: String) {
+    public init(root: String, batchSize: Int) {
+        self.batchSize = batchSize
         rootPath = root
         trainingSet = try! ImageReader.fileManager.contentsOfDirectory(atPath: root + "/train")
         testSet = try! ImageReader.fileManager.contentsOfDirectory(atPath: root + "/test")
@@ -47,18 +55,24 @@ public class Cifar10Reader: ImageReader {
         print("labels: \(labels)")
     }
     
+    func getLabel(at index: Int, from type: SetType = .train) -> [Float] {
+        let title = String(
+            (type == .train ? trainingSet[index] : testSet[index])
+                .split(separator: "_")[1]
+                .split(separator: ".")[0]
+        )
+        return labels.map { Float($0 == title ? 1.0 : 0.0) }
+    }
+    
     public func getTrain(_ index: Int) -> (image: NNArray, label: NNArray)? {
         if index >= trainingSet.count {
             return nil
         }
-        
+
         let path = rootPath + "/train/" + trainingSet[index]
-        let title = String(
-            trainingSet[index].split(separator: "_")[1].split(separator: ".")[0]
-        )
-        let labelArray = labels.map { Float($0 == title ? 1.0 : 0.0) }
+        let labelArray = getLabel(at: index, from: .train)
         if let image = readImage(path: path) {
-            return (image: image, label: NNArray(labelArray))
+            return (image: image, label: NNArray(labelArray, d: [1, labelArray.count]))
         } else {
             return nil
         }
@@ -70,10 +84,7 @@ public class Cifar10Reader: ImageReader {
         }
         
         let path = rootPath + "/test/" + testSet[index]
-        let title = String(
-            testSet[index].split(separator: "_")[1].split(separator: ".")[0]
-        )
-        let label = labels.firstIndex { $0 == title }!
+        let label = getLabel(at: index, from: .test).firstIndex(of: 1.0)!
         if let image = readImage(path: path) {
             return (image: image, label: label)
         } else {
@@ -82,40 +93,25 @@ public class Cifar10Reader: ImageReader {
     }
     
     public func nextTrain() -> (image: NNArray, label: NNArray)? {
-        if trainIndex >= trainingSet.count {
+        if trainIndex + batchSize - 1 >= trainingSet.count {
             trainIndex = 0
             return nil
         }
         
-        let path = rootPath + "/train/" + trainingSet[trainIndex]
-        let title = String(
-            trainingSet[trainIndex].split(separator: "_")[1].split(separator: ".")[0]
-        )
-        let labelArray = labels.map { Float($0 == title ? 1.0 : 0.0) }
-        trainIndex += 1
-        if let image = readImage(path: path) {
-            return (image: image, label: NNArray(labelArray))
-        } else {
-            return nil
+        let imageholder = NNArray(batchSize, 3, 32, 32)
+        let labelholder = NNArray(batchSize, 10)
+
+        let pool = ThreadPool(count: batchSize)
+        pool.run { (i) in
+            let path = self.rootPath + "/train/" + self.trainingSet[self.trainIndex + i]
+            _ = self.readImage(path: path, buffer: imageholder, batch: i)
+            let label = self.getLabel(at: self.trainIndex + i, from: .train)
+            for j in 0..<10 {
+                labelholder[i, j] = label[j]
+            }
         }
-    }
-    
-    public func nextTest() -> (image: NNArray, label: Int)? {
-        if testIndex >= testSet.count {
-            testIndex = 0
-            return nil
-        }
+        trainIndex += batchSize
         
-        let path = rootPath + "/test/" + testSet[testIndex]
-        let title = String(
-            testSet[testIndex].split(separator: "_")[1].split(separator: ".")[0]
-        )
-        let label = labels.firstIndex { $0 == title }!
-        testIndex += 1
-        if let image = readImage(path: path) {
-            return (image: image, label: label)
-        } else {
-            return nil
-        }
+        return (imageholder, labelholder)
     }
 }

@@ -9,11 +9,11 @@
 import Foundation
 
 public class Sequential: BaseContainer {
-    @objc dynamic private var layers: [BaseLayer] = []
-    private var score = NNArray()
-    private var input = NNArray()
+    @objc dynamic var layers: [BaseLayer] = []
+    var score = NNArray()
+    var input = NNArray()
     
-    public var lossClass = Loss.svm2.self
+    public var lossClass: AbstractLoss.Type = Loss.svm.self
     
     public override init() {
         super.init()
@@ -38,6 +38,7 @@ public class Sequential: BaseContainer {
         for l in layers {
             autoreleasepool {
                 input = l.forward(input)
+//                print(input)
             }
         }
         score = input.copy()

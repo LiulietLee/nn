@@ -1,20 +1,15 @@
 //
-//  Loss.swift
+//  d2.swift
 //  nn
 //
-//  Created by Liuliet.Lee on 12/10/2019.
-//  Copyright © 2019 Liuliet.Lee. All rights reserved.
+//  Created by Liuliet.Lee on 14/1/2020.
+//  Copyright © 2020 Liuliet.Lee. All rights reserved.
 //
 
 import Foundation
 
-public protocol AbstractLoss {
-    static func loss(score: NNArray, label: NNArray) -> Float
-    static func delta(score: NNArray, label: NNArray) -> NNArray
-}
-
-public class Loss {
-    public class svm2: AbstractLoss {
+extension Loss {
+    public class d2: AbstractLoss {
         public static func loss(score: NNArray, label: NNArray) -> Float {
             var loss: Float = 0.0
             for i in 0..<score.count {

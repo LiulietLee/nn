@@ -78,7 +78,6 @@ extension ModelStorage {
                 container.load(from: file)
             } else if let containers = value as? [Container] {
                 for i in 0..<containers.count {
-                    print(containers[i])
                     containers[i].load(from: file)
                 }
             } else if let layers = value as? [Layer] {
