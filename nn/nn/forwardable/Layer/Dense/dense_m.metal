@@ -67,9 +67,8 @@ kernel void dense_backward_1(device const bool &need_relu,
         delta[gid[0] * out_features +
               i]
         *
-        matrix[gid[0] * out_features * in_features +
-               gid[1] * in_features +
-               gid[2]];
+        matrix[i * in_features +
+               gid[1]];
         
         if (need_relu && inter_score[gid[0] * out_features + i] < 0.0) {
             da[index] += d * 0.001;
@@ -99,7 +98,7 @@ kernel void dense_backward_2(device const bool &need_relu,
     }
     
     float d = delta[batch * out_features + i] * input[batch * in_features + j];
-    int index = batch * in_features * out_features + i * out_features + j;
+    int index = batch * in_features * out_features + i * in_features + j;
     if (need_relu && inter_score[batch * out_features + i] < 0.0) {
         dparam[index] += d * 0.001;
     } else {

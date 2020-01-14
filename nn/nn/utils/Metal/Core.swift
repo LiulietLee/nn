@@ -75,3 +75,16 @@ public class Core {
         return buffer(arr.data)
     }
 }
+
+func triggerProgrammaticCapture() {
+    let captureManager = MTLCaptureManager.shared()
+    let captureDescriptor = MTLCaptureDescriptor()
+    captureDescriptor.captureObject = Core.device
+    do {
+        try captureManager.startCapture(with: captureDescriptor)
+    }
+    catch
+    {
+        fatalError("error when trying to capture: \(error)")
+    }
+}

@@ -52,28 +52,29 @@ public class Dense: BaseLayer {
 
         if Core.device != nil {
             forwardWithMetal(input)
-        } else {
-            interScore.data.zero()
-            
-            for batch in 0..<batchSize {
-                for i in 0..<outFeatures {
-                    for j in 0..<inFeatures {
-                        interScore[batch, i] += param[i, j] * input[batch, j]
-                    }
+            return score
+        }
+        
+        interScore.data.zero()
+        
+        for batch in 0..<batchSize {
+            for i in 0..<outFeatures {
+                for j in 0..<inFeatures {
+                    interScore[batch, i] += param[i, j] * input[batch, j]
                 }
+            }
 
-            
-                if needBias {
-                    for i in 0..<outFeatures {
-                        interScore[batch, i] += bias[i]
-                    }
+        
+            for i in 0..<outFeatures {
+                score[batch, i] = interScore[batch, i]
+                if relu && interScore[batch, i] < 0.0 {
+                    score[batch, i] *= 0.001
                 }
+            }
             
+            if needBias {
                 for i in 0..<outFeatures {
-                    score[batch, i] = interScore[batch, i]
-                    if relu && interScore[batch, i] < 0.0 {
-                        score[batch, i] *= 0.001
-                    }
+                    score[batch, i] += bias[i]
                 }
             }
         }
@@ -131,9 +132,9 @@ public class Dense: BaseLayer {
     public override func step(lr: Float, momentum: Float) {
         if Core.device != nil {
             if needBias {
-                stepWithMetal(lr: lr, momentum: momentum, d: dbias, v: vbias, p: bias)
+                stepWithMetal(batch: batchSize, lr: lr, momentum: momentum, d: dbias, v: vbias, p: bias)
             }
-            stepWithMetal(lr: lr, momentum: momentum, d: dparam, v: vparam, p: param)
+            stepWithMetal(batch: batchSize, lr: lr, momentum: momentum, d: dparam, v: vparam, p: param)
             return
         }
         
