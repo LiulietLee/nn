@@ -19,9 +19,12 @@ public class Dense: BaseLayer {
 
     var interScore = NNArray()
 
-    var vparam = NNArray()
-    var vbias = NNArray()
-    
+    @objc dynamic var vparam = NNArray()
+    @objc dynamic var vbias = NNArray()
+
+    @objc dynamic var mparam = NNArray()
+    @objc dynamic var mbias = NNArray()
+
     var dparam = NNArray()
     var dbias = NNArray()
     
@@ -43,6 +46,8 @@ public class Dense: BaseLayer {
             interScore = NNArray(batchSize, outFeatures)
             vparam = NNArray(batchSize, outFeatures, inFeatures)
             vbias = NNArray(batchSize, outFeatures)
+            mparam = NNArray(batchSize, outFeatures, inFeatures)
+            mbias = NNArray(batchSize, outFeatures)
             dparam = NNArray(batchSize, outFeatures, inFeatures)
             dbias = NNArray(batchSize, outFeatures)
         }
@@ -132,24 +137,26 @@ public class Dense: BaseLayer {
     public override func step(lr: Float, momentum: Float) {
         if Core.device != nil {
             if needBias {
-                stepWithMetal(batch: batchSize, lr: lr, momentum: momentum, d: dbias, v: vbias, p: bias)
+                stepWithMetal(batch: batchSize, lr: lr, momentum: momentum, d: dbias, m: mbias, v: vbias, p: bias)
             }
-            stepWithMetal(batch: batchSize, lr: lr, momentum: momentum, d: dparam, v: vparam, p: param)
+            stepWithMetal(batch: batchSize, lr: lr, momentum: momentum, d: dparam, m: mparam, v: vparam, p: param)
             return
         }
-        
+
         for batch in 0..<batchSize {
             if needBias {
                 for i in 0..<outFeatures {
-                    vbias[batch, i] = momentum * vbias[batch, i] + dbias[batch, i]
-                    bias[i] -= lr * vbias[batch, i]
+                    mbias[batch, i] = 0.9 * mbias[batch, i] + (1 - 0.9) * dbias[batch, i]
+                    vbias[batch, i] = momentum * vbias[batch, i] + (1 - momentum) * dbias[batch, i] * dbias[batch, i]
+                    bias[i] -= lr * mbias[batch, i] / (sqrt(vbias[batch, i]) + 1e-8)
                 }
             }
             
             for i in 0..<outFeatures {
                 for j in 0..<inFeatures {
-                    vparam[batch, i, j] = momentum * vparam[batch, i, j] + dparam[batch, i, j]
-                    param[i, j] -= lr * vparam[batch, i, j]
+                    mparam[batch, i, j] = 0.9 * mparam[batch, i, j] + (1 - 0.9) * dparam[batch, i, j]
+                    vparam[batch, i, j] = momentum * vparam[batch, i, j] + (1 - momentum) * dparam[batch, i, j] * dparam[batch, i, j]
+                    param[i, j] -= lr * mparam[batch, i, j] / (sqrt(vparam[batch, i, j]) + 1e-8)
                 }
             }
         }

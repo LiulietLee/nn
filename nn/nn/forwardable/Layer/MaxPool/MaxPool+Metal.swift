@@ -1,5 +1,5 @@
 //
-//  MaxPooling+Metal.swift
+//  MaxPool+Metal.swift
 //  nn
 //
 //  Created by Liuliet.Lee on 29/12/2019.
@@ -9,7 +9,7 @@
 import Foundation
 import MetalPerformanceShaders
 
-extension MaxPooling {
+extension MaxPool {
     struct PoolingLayerInfo {
         var coreSize: SIMD2<Int32>
         var outSize: SIMD2<Int32>
@@ -17,7 +17,7 @@ extension MaxPooling {
         var stride: Int32
         var batchSize: Int32
         
-        init(_ obj: MaxPooling, input: NNArray) {
+        init(_ obj: MaxPool, input: NNArray) {
             coreSize = SIMD2<Int32>(Int32(obj.width), Int32(obj.height))
             outSize = SIMD2<Int32>(Int32(obj.row), Int32(obj.col))
             inSize = SIMD3<Int32>(Int32(input.d[1]), Int32(input.d[2]), Int32(input.d[3]))
@@ -27,7 +27,7 @@ extension MaxPooling {
     }
 }
 
-extension MaxPooling {
+extension MaxPool {
     
     func forwardWithMetal(_ input: NNArray) -> NNArray {
         let pipeline = Core.pipeline(by: "maxpooling_forward");
@@ -54,11 +54,9 @@ extension MaxPooling {
     }
 }
 
-extension MaxPooling {
+extension MaxPool {
     
-    func backwardWithMetal(_ input: NNArray, _ delta: NNArray) -> NNArray {
-        let da = NNArray(input.count)
-        
+    func backwardWithMetal(_ da: NNArray, _ input: NNArray, _ delta: NNArray) -> NNArray {        
         let pipeline = Core.pipeline(by: "maxpooling_backward");
         let queue = Core.queue()
         var info = PoolingLayerInfo(self, input: input)

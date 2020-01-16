@@ -21,8 +21,16 @@ public class Core {
     
     static var library: MTLLibrary!
     
+    static var functionMap = [String: MTLFunction]()
+    
     static func function(_ name: String) -> MTLFunction {
-        return library.makeFunction(name: name)!
+        if let function = functionMap[name] {
+            return function
+        } else {
+            let function = library.makeFunction(name: name)!
+            functionMap[name] = function
+            return function
+        }
     }
     
     static func pipeline(by functionName: String) -> MTLComputePipelineState {
@@ -74,17 +82,22 @@ public class Core {
     static func buffer(_ arr: NNArray) -> MTLBuffer {
         return buffer(arr.data)
     }
-}
-
-func triggerProgrammaticCapture() {
-    let captureManager = MTLCaptureManager.shared()
-    let captureDescriptor = MTLCaptureDescriptor()
-    captureDescriptor.captureObject = Core.device
-    do {
-        try captureManager.startCapture(with: captureDescriptor)
+    
+    static func startCapture() {
+        let captureManager = MTLCaptureManager.shared()
+        let captureDescriptor = MTLCaptureDescriptor()
+        captureDescriptor.captureObject = Core.device
+        do {
+            try captureManager.startCapture(with: captureDescriptor)
+        }
+        catch
+        {
+            fatalError("error when trying to capture: \(error)")
+        }
     }
-    catch
-    {
-        fatalError("error when trying to capture: \(error)")
+
+    static func stopCapture() {
+        let captureManager = MTLCaptureManager.shared()
+        captureManager.stopCapture()
     }
 }

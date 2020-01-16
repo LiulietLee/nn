@@ -26,6 +26,10 @@ kernel void conv_forward(device const conv_layer_info &info,
                          device const float *input,
                          device const float *core,
                          device const float *bi,
+                         device const int &input_length,
+                         device const int &core_length,
+                         device const int &bi_length,
+                         device const int &score_length,
                          device float *score,
                          uint3 gid [[ thread_position_in_grid ]])
 {
@@ -37,6 +41,8 @@ kernel void conv_forward(device const conv_layer_info &info,
     gid[1] * info.out_size[1] * info.out_size[2] +
     gid[2];
     
+    if (index >= score_length) return;
+    
     score[index] = 0.0;
     for (int x = 0; x < info.core_size[1]; x++) {
         for (int y = 0; y < info.core_size[2]; y++) {
@@ -44,21 +50,27 @@ kernel void conv_forward(device const conv_layer_info &info,
                 int rx = i * info.stride + x - info.padding;
                 int ry = j * info.stride + y - info.padding;
                 if (in_bound(rx, ry, info.in_size[1], info.in_size[2])) {
-                    score[index]
-                    +=
-                    input[gid[0] * info.in_size[0] * info.in_size[1] * info.in_size[2] +
-                          z * info.in_size[1] * info.in_size[2] +
-                          rx * info.in_size[2] +
-                          ry]
-                    *
-                    core[gid[1] * info.core_size[0] * info.core_size[1] * info.core_size[2] +
-                         z * info.core_size[1] * info.core_size[2] +
-                         x * info.core_size[2] +
-                         y];
+                    int ii =
+                    gid[0] * info.in_size[0] * info.in_size[1] * info.in_size[2] +
+                    z * info.in_size[1] * info.in_size[2] +
+                    rx * info.in_size[2] +
+                    ry;
+                    
+                    int ic =
+                    gid[1] * info.core_size[0] * info.core_size[1] * info.core_size[2] +
+                    z * info.core_size[1] * info.core_size[2] +
+                    x * info.core_size[2] +
+                    y;
+                    
+                    if (ii >= input_length || ic >= core_length) continue;
+                    
+                    score[index] += input[ii] * core[ic];
                 }
             }
         }
     }
+    
+    if ((int)gid[1] >= bi_length) return;
     
     score[index] += bi[gid[1]];
 }
@@ -66,6 +78,9 @@ kernel void conv_forward(device const conv_layer_info &info,
 kernel void conv_backward_1(device const conv_layer_info &info,
                             device const float *core,
                             device const float *delta,
+                            device const int &core_length,
+                            device const int &delta_length,
+                            device const int &da_length,
                             device float *da,
                             uint3 gid [[thread_position_in_grid ]])
 {
@@ -76,7 +91,12 @@ kernel void conv_backward_1(device const conv_layer_info &info,
     int index =
     gid[0] * info.in_size[0] * info.in_size[1] * info.in_size[2] +
     gid[1] * info.in_size[1] * info.in_size[2] +
-    gid[2];
+    rx * info.in_size[2] +
+    ry;
+    
+    if (index >= da_length) {
+        return;
+    }
     
     for (int c = 0; c < info.out_size[0]; c++) {
         for (int x = 0; x < info.core_size[1]; x++) {
@@ -86,17 +106,21 @@ kernel void conv_backward_1(device const conv_layer_info &info,
                     int i = (rx + info.padding - x) / info.stride;
                     int j = (ry + info.padding - y) / info.stride;
                     if (in_bound(i, j, info.out_size[1], info.out_size[2])) {
-                        da[index]
-                        +=
-                        core[c * info.core_size[0] * info.core_size[1] * info.core_size[2] +
-                             gid[1] * info.core_size[1] * info.core_size[2] +
-                             x * info.core_size[2] +
-                             y]
-                        *
-                        delta[gid[0] * info.out_size[0] * info.out_size[1] * info.out_size[2] +
-                              c * info.out_size[1] * info.out_size[2] +
-                              i * info.out_size[2] +
-                              j];
+                        int ic =
+                        c * info.core_size[0] * info.core_size[1] * info.core_size[2] +
+                        gid[1] * info.core_size[1] * info.core_size[2] +
+                        x * info.core_size[2] +
+                        y;
+                        
+                        int id =
+                        gid[0] * info.out_size[0] * info.out_size[1] * info.out_size[2] +
+                        c * info.out_size[1] * info.out_size[2] +
+                        i * info.out_size[2] +
+                        j;
+                        
+                        if (ic >= core_length || id >= delta_length) continue;
+                        
+                        da[index] += core[ic] * delta[id];
                     }
                 }
             }
@@ -108,6 +132,10 @@ kernel void conv_backward_2(device const conv_layer_info &info,
                             device const float *input,
                             device const float *delta,
                             device const bool &need_bias,
+                            device const int &input_length,
+                            device const int &delta_length,
+                            device const int &dbias_length,
+                            device const int &dcore_length,
                             device float *dbias,
                             device float *dcore,
                             uint3 gid [[thread_position_in_grid ]])
@@ -120,30 +148,43 @@ kernel void conv_backward_2(device const conv_layer_info &info,
     
     for (int i = 0; i < info.out_size[1]; i++) {
         for (int j = 0; j < info.out_size[2]; j++) {
-            float cur_delta = delta[gid[0] * info.out_size[0] * info.out_size[1] * info.out_size[2] +
-                                    c * info.out_size[1] * info.out_size[2] +
-                                    i * info.out_size[2] +
-                                    j];
+            int id =
+            gid[0] * info.out_size[0] * info.out_size[1] * info.out_size[2] +
+            c * info.out_size[1] * info.out_size[2] +
+            i * info.out_size[2] +
+            j;
+            
+            if (id >= delta_length) continue;
+            
+            float cur_delta = delta[id];
             sum += cur_delta;
             
             int rx = i * info.stride + x - info.padding;
             int ry = j * info.stride + y - info.padding;
             if (in_bound(rx, ry, info.in_size[1], info.in_size[2])) {
-                dcore[gid[0] * info.out_size[0] * info.core_size[0] * info.core_size[1] * info.core_size[2] +
-                      c * info.core_size[0] * info.core_size[1] * info.core_size[2] +
-                      z * info.core_size[1] * info.core_size[2] +
-                      gid[2]]
-                +=
-                input[gid[0] * info.in_size[0] * info.in_size[1] * info.in_size[2] +
-                      z * info.in_size[1] * info.in_size[2] +
-                      rx * info.in_size[2] +
-                      ry]
-                * cur_delta;
+                int ic =
+                gid[0] * info.out_size[0] * info.core_size[0] * info.core_size[1] * info.core_size[2] +
+                c * info.core_size[0] * info.core_size[1] * info.core_size[2] +
+                z * info.core_size[1] * info.core_size[2] +
+                x * info.core_size[2] +
+                y;
+                
+                int ii =
+                gid[0] * info.in_size[0] * info.in_size[1] * info.in_size[2] +
+                z * info.in_size[1] * info.in_size[2] +
+                rx * info.in_size[2] +
+                ry;
+                
+                if (ic >= dcore_length || ii >= input_length) continue;
+                
+                dcore[ic] += input[ii] * cur_delta;
             }
         }
     }
     
-    if (need_bias && z == 0 && gid[1] == 0) {
-        dbias[gid[0] * info.out_size[0] + c] += sum;
+    if (need_bias && z == 0 && gid[2] == 0) {
+        int ib = gid[0] * info.out_size[0] + c;
+        if (ib >= dbias_length) return;
+        dbias[ib] += sum;
     }
 }

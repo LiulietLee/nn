@@ -9,9 +9,7 @@
 import Foundation
 import MetalPerformanceShaders
 
-func stepWithMetal(batch: Int, lr: Float, momentum: Float, d: NNArray, v: NNArray, p: NNArray) {
-//    triggerProgrammaticCapture()
-
+func stepWithMetal(batch: Int, lr: Float, momentum: Float, d: NNArray, m: NNArray, v: NNArray, p: NNArray) {
     let pipeline = Core.pipeline(by: "param_step");
     let queue = Core.queue()
     
@@ -25,15 +23,11 @@ func stepWithMetal(batch: Int, lr: Float, momentum: Float, d: NNArray, v: NNArra
     Core.encode(
         commandBuffer: commandBuffer,
         pipeline: pipeline,
-        buffers: Core.buffer(&batch), Core.buffer(&lr), Core.buffer(&momentum), Core.buffer(&count),  Core.buffer(d), Core.buffer(v), Core.buffer(p),
+        buffers: Core.buffer(&batch), Core.buffer(&lr), Core.buffer(&momentum), Core.buffer(&count),  Core.buffer(d), Core.buffer(m), Core.buffer(v), Core.buffer(p),
         grid: [p.count, 1, 1],
         thread: [w, 1, 1]
     )
             
     commandBuffer.commit()
     commandBuffer.waitUntilCompleted()
-    
-//    let captureManager = MTLCaptureManager.shared()
-//    captureManager.stopCapture()
-
 }

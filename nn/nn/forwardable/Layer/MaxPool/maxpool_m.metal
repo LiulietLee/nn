@@ -1,5 +1,5 @@
 //
-//  maxpooling_m.metal
+//  maxpool_m.metal
 //  nn
 //
 //  Created by Liuliet.Lee on 29/12/2019.
@@ -18,7 +18,8 @@ struct pooling_layer_info {
 };
 
 struct switch_mapper {
-    int oi, oj, ix, iy, k;
+    int batch;
+    int3 inpos, outpos;
 };
 
 kernel void maxpooling_forward(device const pooling_layer_info &info,
@@ -58,8 +59,14 @@ kernel void maxpooling_forward(device const pooling_layer_info &info,
         gid[1] * info.out_size[0] * info.out_size[1] +
         gid[2];
     
+//    batch,
+//    Position(k, maxPosition.0, maxPosition.1),
+//    Position(k, i, j)
+
+    int3 inpos = {(int)gid[1], max_pos[0], max_pos[1]};
+    int3 outpos = {(int)gid[1], i, j};
     switches[index] = switch_mapper {
-        (int)gid[0], (int)gid[1], max_pos[0], max_pos[1], (int)gid[2]
+        (int)gid[0], inpos, outpos
     };
     score[index] = maxv;
 }
@@ -71,11 +78,13 @@ kernel void maxpooling_backward(device const pooling_layer_info &info,
                                 uint index [[ thread_position_in_grid ]])
 {
     switch_mapper m = switches[index];
-    da[m.ix * info.in_size[1] * info.in_size[2] +
-       m.iy * info.in_size[2] +
-       m.k]
+    da[m.batch * info.in_size[0] * info.in_size[1] * info.in_size[2] +
+       m.inpos[0] * info.in_size[1] * info.in_size[2] +
+       m.inpos[1] * info.in_size[2] +
+       m.inpos[2]]
     =
-    delta[m.oi * info.out_size[1] * info.in_size[2] +
-          m.oj * info.in_size[2] +
-          m.k];
+    delta[m.batch * info.in_size[0] * info.out_size[0] * info.out_size[1] +
+          m.outpos[0] * info.out_size[0] * info.out_size[1] +
+          m.outpos[1] * info.out_size[1] +
+          m.outpos[2]];
 }

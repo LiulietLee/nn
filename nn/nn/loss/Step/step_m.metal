@@ -14,13 +14,19 @@ kernel void param_step(device const int &batch,
                        device const float &momentum,
                        device const int &count,
                        device const float *d,
+                       device float *m,
                        device float *v,
                        device float *p,
                        uint i [[ thread_position_in_grid ]])
 {
+//                    m = beta1*m + (1-beta1)*dx
+//                    v = beta2*v + (1-beta2)*(dx**2)
+//                    x += - learning_rate * m / (np.sqrt(v) + eps)
+
     for (int j = 0; j < batch; j++) {
         int idx = j * count + i;
-        v[idx] = momentum * v[idx] + d[idx];
-        p[i] -= lr * v[idx];
+        m[idx] = 0.9 * m[idx] + (1 - 0.9) * d[idx];
+        v[idx] = momentum * v[idx] + (1 - 0.9) * d[idx] * d[idx];
+        p[i] -= lr * m[idx] / (sqrt(v[idx]) + 0.0000001);
     }
 }

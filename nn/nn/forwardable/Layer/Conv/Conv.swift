@@ -13,8 +13,11 @@ public class Conv: BaseLayer {
     @objc dynamic var convCore = NNArray()
     @objc dynamic var bias: NNArray
     
-    var vcore = NNArray()
-    var vbias = NNArray()
+    @objc dynamic var vcore = NNArray()
+    @objc dynamic var vbias = NNArray()
+    
+    @objc dynamic var mcore = NNArray()
+    @objc dynamic var mbias = NNArray()
     
     var dcore = NNArray()
     var dbias = NNArray()
@@ -47,20 +50,24 @@ public class Conv: BaseLayer {
     public override func forward(_ input: NNArray) -> NNArray {
         if batchSize == 0 {
             precondition(
-                (input.d[1] - width + padding * 2) % step == 0 &&
-                (input.d[2] - height + padding * 2) % step == 0
+                (input.d[2] - width + padding * 2) % step == 0 &&
+                (input.d[3] - height + padding * 2) % step == 0
             )
             batchSize = input.d[0]
             depth = input.d[1]
             row = (input.d[2] - width + padding * 2) / step + 1
             col = (input.d[3] - height + padding * 2) / step + 1
             
-            convCore = NNArray(count, depth, width, height)
-            convCore.normalRandn(n: input.count + score.count)
-
-            vcore = NNArray(batchSize, count, depth, width, height)
+            if convCore.d == [] {
+                convCore = NNArray(count, depth, width, height)
+                convCore.normalRandn(n: input.count + score.count)
+                vcore = NNArray(batchSize, count, depth, width, height)
+                vbias = NNArray(batchSize, count)
+                mcore = NNArray(batchSize, count, depth, width, height)
+                mbias = NNArray(batchSize, count)
+            }
+            
             dcore = NNArray(batchSize, count, depth, width, height)
-            vbias = NNArray(batchSize, count)
             dbias = NNArray(batchSize, count)
             
             score = NNArray(batchSize, count, row, col)
@@ -68,7 +75,8 @@ public class Conv: BaseLayer {
         score.data.zero()
         
         if Core.device != nil {
-            return forwardWithMetal(input)
+            forwardWithMetal(input)
+            return score
         }
         
         for batch in 0..<batchSize {
@@ -97,13 +105,14 @@ public class Conv: BaseLayer {
     }
 
     public override func backward(_ input: NNArray, delta: NNArray) -> NNArray {
-        let da = NNArray(input.count, initValue: 0.0)
-        da.dim(input.d)
         delta.dim(score.d)
-        
+
         if Core.device != nil {
-            return backwardWithMetal(da, input, delta)
+            return backwardWithMetal(input, delta)
         }
+        
+        let da = NNArray(input.count)
+        da.dim(input.d)
         
         for batch in 0..<batchSize {
             if needBias {
@@ -163,22 +172,27 @@ public class Conv: BaseLayer {
     public override func step(lr: Float, momentum: Float) {
         if Core.device != nil {
             if needBias {
-                stepWithMetal(lr: lr, momentum: momentum, d: dbias, v: vbias, p: bias)
+                stepWithMetal(batch: batchSize, lr: lr, momentum: momentum, d: dbias, m: mbias, v: vbias, p: bias)
             }
-            stepWithMetal(lr: lr, momentum: momentum, d: dcore, v: vcore, p: convCore)
+            stepWithMetal(batch: batchSize, lr: lr, momentum: momentum, d: dcore, m: mcore, v: vcore, p: convCore)
             return
         }
         
-        if needBias {
-            for i in 0..<bias.count {
-                vbias[i] = momentum * vbias[i] + dbias[i]
-                bias[i] -= lr * vbias[i]
+        for batch in 0..<batchSize {
+            if needBias {
+                for i in 0..<bias.count {                    
+                    mbias[batch, i] = 0.9 * mbias[batch, i] + (1.0 - 0.9) * dbias[batch, i]
+                    vbias[batch, i] = momentum * vbias[batch, i] + (1.0 - momentum) * dbias[batch, i] * dbias[batch, i]
+                    bias[i] -= lr * mbias[batch, i] / (sqrt(vbias[batch, i]) + 1e-8)
+                }
             }
-        }
-        
-        for i in 0..<convCore.count {
-            vcore[i] = momentum * vcore[i] + dcore[i]
-            convCore[i] -= lr * vcore[i]
+            
+            for i in 0..<convCore.count {
+                let idx = batch * convCore.count + i
+                mcore[idx] = 0.9 * mcore[idx] + (1.0 - 0.9) * dcore[idx]
+                vcore[idx] = momentum * vcore[idx] + (1.0 - momentum) * dcore[idx] * dcore[idx]
+                convCore[i] -= lr * mcore[idx] / (sqrt(vcore[idx]) + 1e-8)
+            }
         }
     }
     

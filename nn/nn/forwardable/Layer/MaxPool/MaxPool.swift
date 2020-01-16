@@ -8,10 +8,34 @@
 
 import Foundation
 
-public class MaxPooling: BaseLayer {
+public class MaxPool: BaseLayer {
+    public struct Position {
+        var p = SIMD3<Int32>()
         
+        public init() {}
+        
+        public init(_ x: Int, _ y: Int, _ z: Int) {
+            p = SIMD3<Int32>(Int32(x), Int32(y), Int32(z))
+        }
+    }
+    
     public struct SwitchMapper {
-        var oi: Int32, oj: Int32, ix: Int32, iy: Int32, k: Int32
+        var batch: Int32
+        var inPos: Position, outPos: Position
+        
+        var inputPosition: [Int] {
+            [Int(batch), Int(inPos.p[0]), Int(inPos.p[1]), Int(inPos.p[2])]
+        }
+        
+        var outputPosition: [Int] {
+            [Int(batch), Int(outPos.p[0]), Int(outPos.p[1]), Int(outPos.p[2])]
+        }
+        
+        init(_ batch: Int, _ inPos: Position, _ outPos: Position) {
+            self.batch = Int32(batch)
+            self.inPos = inPos
+            self.outPos = outPos
+        }
     }
     
     public var switches = LLVector<SwitchMapper>()
@@ -55,20 +79,24 @@ public class MaxPooling: BaseLayer {
                     let ri = i * step
                     for j in 0..<col {
                         let rj = j * step
-                        var maxPostion = (ri, rj)
+                        var maxPosition = (ri, rj)
                         var maxValue = input[batch, k, ri, rj]
                         for x in 0..<width {
                             for y in 0..<height {
                                 let rx = ri + x, ry = rj + y
                                 if maxValue < input[batch, k, rx, ry] {
                                     maxValue = input[batch, k, rx, ry]
-                                    maxPostion = (rx, ry)
+                                    maxPosition = (rx, ry)
                                 }
                             }
                         }
                         switches[batch * input.d[1] * row * col +
-                            k * row * col + i * col + j] = SwitchMapper(
-                            oi: Int32(i), oj: Int32(j), ix: Int32(maxPostion.0), iy: Int32(maxPostion.1), k: Int32(k)
+                            k * row * col +
+                            i * col +
+                            j] = SwitchMapper(
+                                batch,
+                                Position(k, maxPosition.0, maxPosition.1),
+                                Position(k, i, j)
                         )
                         score[batch, k, i, j] = maxValue
                     }
@@ -84,12 +112,12 @@ public class MaxPooling: BaseLayer {
         delta.dim(score.d)
         
         if Core.device != nil {
-            return backwardWithMetal(input, delta)
+            return backwardWithMetal(da, input, delta)
         }
         
         for choose in switches {
-            da[Int(choose.ix), Int(choose.iy), Int(choose.k)] =
-                delta[Int(choose.oi), Int(choose.oj), Int(choose.k)]
+            let i = choose.inputPosition, j = choose.outputPosition
+            da[i[0], i[1], i[2], i[3]] = delta[j[0], j[1], j[2], j[3]]
         }
         
         return da

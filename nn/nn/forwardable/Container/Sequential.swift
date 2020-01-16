@@ -38,7 +38,6 @@ public class Sequential: BaseContainer {
         for l in layers {
             autoreleasepool {
                 input = l.forward(input)
-//                print(input)
             }
         }
         score = input.copy()
