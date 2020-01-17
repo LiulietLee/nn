@@ -11,6 +11,7 @@
 		4F16BAA323AF256D00E905D3 /* Dense+Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F16BAA223AF256D00E905D3 /* Dense+Metal.swift */; };
 		4F276C9D23C0754000D0403A /* Forwardable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F276C9C23C0754000D0403A /* Forwardable.swift */; };
 		4F276C9F23C07FC100D0403A /* NormalRandom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F276C9E23C07FC100D0403A /* NormalRandom.swift */; };
+		4F276CA323C0A71400D0403A /* BatchNorm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F276CA223C0A71400D0403A /* BatchNorm.swift */; };
 		4F35810F2351B1050037C87D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F35810E2351B1050037C87D /* main.swift */; };
 		4F3581162351EB190037C87D /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3581152351EB190037C87D /* Matrix.swift */; };
 		4F3581192351EF820037C87D /* Dense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3581182351EF820037C87D /* Dense.swift */; };
@@ -19,10 +20,18 @@
 		4F35811F2351F6ED0037C87D /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F35811E2351F6ED0037C87D /* Container.swift */; };
 		4F3581212351FA590037C87D /* Loss.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3581202351FA590037C87D /* Loss.swift */; };
 		4F3581232351FCDC0037C87D /* ReLU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3581222351FCDC0037C87D /* ReLU.swift */; };
+		4F59065C23CE104100FE4E8A /* softmax.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F59065B23CE104100FE4E8A /* softmax.swift */; };
+		4F59065F23D0BC5600FE4E8A /* AutoRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F59065E23D0BC5600FE4E8A /* AutoRunner.swift */; };
+		4F59066123D1B13100FE4E8A /* CifarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F59066023D1B13100FE4E8A /* CifarModel.swift */; };
+		4F59066323D1B2F100FE4E8A /* OXModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F59066223D1B2F100FE4E8A /* OXModel.swift */; };
+		4F59066523D1B44100FE4E8A /* backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F59066423D1B44100FE4E8A /* backup.swift */; };
+		4F5A36D723C4A3EA00D01E89 /* Step+Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5A36D623C4A3EA00D01E89 /* Step+Metal.swift */; };
+		4F5A36D923C4A98A00D01E89 /* step_m.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4F5A36D823C4A98A00D01E89 /* step_m.metal */; };
+		4F5E37CB23C373B4001546DC /* ThreadPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E37CA23C373B4001546DC /* ThreadPool.swift */; };
 		4F8661C623B7AFA300629889 /* relu_m.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661C523B7AFA300629889 /* relu_m.metal */; };
 		4F8661C823B7AFBF00629889 /* ReLU+Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661C723B7AFBF00629889 /* ReLU+Metal.swift */; };
-		4F8661CA23B7B6A600629889 /* maxpooling_m.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661C923B7B6A600629889 /* maxpooling_m.metal */; };
-		4F8661CC23B7B6B500629889 /* MaxPooling+Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661CB23B7B6B500629889 /* MaxPooling+Metal.swift */; };
+		4F8661CA23B7B6A600629889 /* maxpool_m.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661C923B7B6A600629889 /* maxpool_m.metal */; };
+		4F8661CC23B7B6B500629889 /* MaxPool+Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661CB23B7B6B500629889 /* MaxPool+Metal.swift */; };
 		4F8661D023B8884200629889 /* Cifar10Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661CF23B8884200629889 /* Cifar10Reader.swift */; };
 		4F8661E523B9E63A00629889 /* ModelStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661E423B9E63A00629889 /* ModelStorage.swift */; };
 		4F8661EB23BA49C300629889 /* BaseLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8661EA23BA49C300629889 /* BaseLayer.swift */; };
@@ -35,7 +44,9 @@
 		4FA9E9BE23A21590003C6730 /* LLVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FA9E9BD23A21590003C6730 /* LLVector.swift */; };
 		4FBC046F23ACF8CA0072B9BE /* ImageReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBC046E23ACF8CA0072B9BE /* ImageReader.swift */; };
 		4FBF5CB423B10071006763CB /* Core.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBF5CB323B10070006763CB /* Core.swift */; };
-		4FC30B6223AB821C00D27427 /* MaxPooling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC30B6123AB821C00D27427 /* MaxPooling.swift */; };
+		4FC30B6223AB821C00D27427 /* MaxPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC30B6123AB821C00D27427 /* MaxPool.swift */; };
+		4FEF5C4123CDA7F000E026D2 /* svm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEF5C4023CDA7F000E026D2 /* svm.swift */; };
+		4FEF5C4323CDA81200E026D2 /* d2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEF5C4223CDA81200E026D2 /* d2.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -55,6 +66,7 @@
 		4F16BAA223AF256D00E905D3 /* Dense+Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dense+Metal.swift"; sourceTree = "<group>"; };
 		4F276C9C23C0754000D0403A /* Forwardable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Forwardable.swift; sourceTree = "<group>"; };
 		4F276C9E23C07FC100D0403A /* NormalRandom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NormalRandom.swift; sourceTree = "<group>"; };
+		4F276CA223C0A71400D0403A /* BatchNorm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchNorm.swift; sourceTree = "<group>"; };
 		4F35810B2351B1050037C87D /* nn */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nn; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F35810E2351B1050037C87D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		4F3581152351EB190037C87D /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
@@ -64,10 +76,18 @@
 		4F35811E2351F6ED0037C87D /* Container.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
 		4F3581202351FA590037C87D /* Loss.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Loss.swift; sourceTree = "<group>"; };
 		4F3581222351FCDC0037C87D /* ReLU.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReLU.swift; sourceTree = "<group>"; };
+		4F59065B23CE104100FE4E8A /* softmax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = softmax.swift; sourceTree = "<group>"; };
+		4F59065E23D0BC5600FE4E8A /* AutoRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoRunner.swift; sourceTree = "<group>"; };
+		4F59066023D1B13100FE4E8A /* CifarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CifarModel.swift; sourceTree = "<group>"; };
+		4F59066223D1B2F100FE4E8A /* OXModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OXModel.swift; path = nn/OXModel.swift; sourceTree = "<group>"; };
+		4F59066423D1B44100FE4E8A /* backup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backup.swift; sourceTree = "<group>"; };
+		4F5A36D623C4A3EA00D01E89 /* Step+Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Step+Metal.swift"; sourceTree = "<group>"; };
+		4F5A36D823C4A98A00D01E89 /* step_m.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = step_m.metal; sourceTree = "<group>"; };
+		4F5E37CA23C373B4001546DC /* ThreadPool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadPool.swift; sourceTree = "<group>"; };
 		4F8661C523B7AFA300629889 /* relu_m.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = relu_m.metal; sourceTree = "<group>"; };
 		4F8661C723B7AFBF00629889 /* ReLU+Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReLU+Metal.swift"; sourceTree = "<group>"; };
-		4F8661C923B7B6A600629889 /* maxpooling_m.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = maxpooling_m.metal; sourceTree = "<group>"; };
-		4F8661CB23B7B6B500629889 /* MaxPooling+Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaxPooling+Metal.swift"; sourceTree = "<group>"; };
+		4F8661C923B7B6A600629889 /* maxpool_m.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = maxpool_m.metal; sourceTree = "<group>"; };
+		4F8661CB23B7B6B500629889 /* MaxPool+Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaxPool+Metal.swift"; sourceTree = "<group>"; };
 		4F8661CF23B8884200629889 /* Cifar10Reader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cifar10Reader.swift; sourceTree = "<group>"; };
 		4F8661E423B9E63A00629889 /* ModelStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelStorage.swift; sourceTree = "<group>"; };
 		4F8661EA23BA49C300629889 /* BaseLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseLayer.swift; sourceTree = "<group>"; };
@@ -80,7 +100,9 @@
 		4FA9E9BD23A21590003C6730 /* LLVector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LLVector.swift; sourceTree = "<group>"; };
 		4FBC046E23ACF8CA0072B9BE /* ImageReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageReader.swift; sourceTree = "<group>"; };
 		4FBF5CB323B10070006763CB /* Core.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Core.swift; sourceTree = "<group>"; };
-		4FC30B6123AB821C00D27427 /* MaxPooling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxPooling.swift; sourceTree = "<group>"; };
+		4FC30B6123AB821C00D27427 /* MaxPool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxPool.swift; sourceTree = "<group>"; };
+		4FEF5C4023CDA7F000E026D2 /* svm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = svm.swift; sourceTree = "<group>"; };
+		4FEF5C4223CDA81200E026D2 /* d2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = d2.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,25 +119,9 @@
 		4F16BA9823AF210E00E905D3 /* Metal */ = {
 			isa = PBXGroup;
 			children = (
-				4F16BA9B23AF22F500E905D3 /* Compute */,
 				4FBF5CB323B10070006763CB /* Core.swift */,
-				4F16BAA223AF256D00E905D3 /* Dense+Metal.swift */,
-				4F9060FD23B49D3F00B26B12 /* Conv+Metal.swift */,
-				4F8661C723B7AFBF00629889 /* ReLU+Metal.swift */,
-				4F8661CB23B7B6B500629889 /* MaxPooling+Metal.swift */,
 			);
 			path = Metal;
-			sourceTree = "<group>";
-		};
-		4F16BA9B23AF22F500E905D3 /* Compute */ = {
-			isa = PBXGroup;
-			children = (
-				4F16BAA023AF23A700E905D3 /* dense_m.metal */,
-				4F9060FB23B49D2400B26B12 /* conv_m.metal */,
-				4F8661C523B7AFA300629889 /* relu_m.metal */,
-				4F8661C923B7B6A600629889 /* maxpooling_m.metal */,
-			);
-			path = Compute;
 			sourceTree = "<group>";
 		};
 		4F276C9B23C0750500D0403A /* forwardable */ = {
@@ -133,10 +139,11 @@
 			children = (
 				4F35811C2351F4660037C87D /* Layer.swift */,
 				4F8661EA23BA49C300629889 /* BaseLayer.swift */,
-				4F3581222351FCDC0037C87D /* ReLU.swift */,
-				4F3581182351EF820037C87D /* Dense.swift */,
-				4FA87004239D41710043D957 /* Conv.swift */,
-				4FC30B6123AB821C00D27427 /* MaxPooling.swift */,
+				4F37AA2423C8CE83007B0581 /* BatchNorm */,
+				4F37AA2323C8CE68007B0581 /* MaxPool */,
+				4F37AA2223C8CE51007B0581 /* Conv */,
+				4F37AA2123C8CCF3007B0581 /* ReLU */,
+				4F5A299823C6272E00862031 /* Dense */,
 			);
 			path = Layer;
 			sourceTree = "<group>";
@@ -147,7 +154,6 @@
 				4F35811E2351F6ED0037C87D /* Container.swift */,
 				4F8661EC23BA4B2D00629889 /* BaseContainer.swift */,
 				4F35811A2351F4060037C87D /* Sequential.swift */,
-				4F3581202351FA590037C87D /* Loss.swift */,
 			);
 			path = Container;
 			sourceTree = "<group>";
@@ -183,6 +189,9 @@
 			children = (
 				4F3581172351EF3C0037C87D /* nn */,
 				4F35810E2351B1050037C87D /* main.swift */,
+				4F59066423D1B44100FE4E8A /* backup.swift */,
+				4F59066223D1B2F100FE4E8A /* OXModel.swift */,
+				4F59066023D1B13100FE4E8A /* CifarModel.swift */,
 			);
 			path = nn;
 			sourceTree = "<group>";
@@ -190,10 +199,86 @@
 		4F3581172351EF3C0037C87D /* nn */ = {
 			isa = PBXGroup;
 			children = (
+				4F37AA2523C8CEBD007B0581 /* loss */,
 				4F29062C2393860C00ABCF34 /* utils */,
 				4F276C9B23C0750500D0403A /* forwardable */,
 			);
 			path = nn;
+			sourceTree = "<group>";
+		};
+		4F37AA2123C8CCF3007B0581 /* ReLU */ = {
+			isa = PBXGroup;
+			children = (
+				4F3581222351FCDC0037C87D /* ReLU.swift */,
+				4F8661C723B7AFBF00629889 /* ReLU+Metal.swift */,
+				4F8661C523B7AFA300629889 /* relu_m.metal */,
+			);
+			path = ReLU;
+			sourceTree = "<group>";
+		};
+		4F37AA2223C8CE51007B0581 /* Conv */ = {
+			isa = PBXGroup;
+			children = (
+				4FA87004239D41710043D957 /* Conv.swift */,
+				4F9060FD23B49D3F00B26B12 /* Conv+Metal.swift */,
+				4F9060FB23B49D2400B26B12 /* conv_m.metal */,
+			);
+			path = Conv;
+			sourceTree = "<group>";
+		};
+		4F37AA2323C8CE68007B0581 /* MaxPool */ = {
+			isa = PBXGroup;
+			children = (
+				4FC30B6123AB821C00D27427 /* MaxPool.swift */,
+				4F8661CB23B7B6B500629889 /* MaxPool+Metal.swift */,
+				4F8661C923B7B6A600629889 /* maxpool_m.metal */,
+			);
+			path = MaxPool;
+			sourceTree = "<group>";
+		};
+		4F37AA2423C8CE83007B0581 /* BatchNorm */ = {
+			isa = PBXGroup;
+			children = (
+				4F276CA223C0A71400D0403A /* BatchNorm.swift */,
+			);
+			path = BatchNorm;
+			sourceTree = "<group>";
+		};
+		4F37AA2523C8CEBD007B0581 /* loss */ = {
+			isa = PBXGroup;
+			children = (
+				4FEF5C3F23CDA7DF00E026D2 /* Loss */,
+				4F37AA2623C8CEE5007B0581 /* Step */,
+			);
+			path = loss;
+			sourceTree = "<group>";
+		};
+		4F37AA2623C8CEE5007B0581 /* Step */ = {
+			isa = PBXGroup;
+			children = (
+				4F5A36D623C4A3EA00D01E89 /* Step+Metal.swift */,
+				4F5A36D823C4A98A00D01E89 /* step_m.metal */,
+			);
+			path = Step;
+			sourceTree = "<group>";
+		};
+		4F59065D23D0BBC200FE4E8A /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				4F5E37CA23C373B4001546DC /* ThreadPool.swift */,
+				4F59065E23D0BC5600FE4E8A /* AutoRunner.swift */,
+			);
+			path = Sync;
+			sourceTree = "<group>";
+		};
+		4F5A299823C6272E00862031 /* Dense */ = {
+			isa = PBXGroup;
+			children = (
+				4F3581182351EF820037C87D /* Dense.swift */,
+				4F16BAA223AF256D00E905D3 /* Dense+Metal.swift */,
+				4F16BAA023AF23A700E905D3 /* dense_m.metal */,
+			);
+			path = Dense;
 			sourceTree = "<group>";
 		};
 		4F8661CD23B887AB00629889 /* Data Struct */ = {
@@ -210,6 +295,7 @@
 		4F8661CE23B887FD00629889 /* IO */ = {
 			isa = PBXGroup;
 			children = (
+				4F59065D23D0BBC200FE4E8A /* Sync */,
 				4F8661E723B9F44200629889 /* Image */,
 				4F8661E623B9F43900629889 /* Model */,
 			);
@@ -232,6 +318,17 @@
 				4F8661CF23B8884200629889 /* Cifar10Reader.swift */,
 			);
 			path = Image;
+			sourceTree = "<group>";
+		};
+		4FEF5C3F23CDA7DF00E026D2 /* Loss */ = {
+			isa = PBXGroup;
+			children = (
+				4F3581202351FA590037C87D /* Loss.swift */,
+				4FEF5C4023CDA7F000E026D2 /* svm.swift */,
+				4FEF5C4223CDA81200E026D2 /* d2.swift */,
+				4F59065B23CE104100FE4E8A /* softmax.swift */,
+			);
+			path = Loss;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -296,28 +393,39 @@
 				4F9060FE23B49D3F00B26B12 /* Conv+Metal.swift in Sources */,
 				4FA87003239D404C0043D957 /* NNArray.swift in Sources */,
 				4F35811F2351F6ED0037C87D /* Container.swift in Sources */,
+				4FEF5C4123CDA7F000E026D2 /* svm.swift in Sources */,
 				4F8661EB23BA49C300629889 /* BaseLayer.swift in Sources */,
+				4F5A36D723C4A3EA00D01E89 /* Step+Metal.swift in Sources */,
 				4F276C9D23C0754000D0403A /* Forwardable.swift in Sources */,
+				4F276CA323C0A71400D0403A /* BatchNorm.swift in Sources */,
 				4FA87005239D41710043D957 /* Conv.swift in Sources */,
 				4F3581162351EB190037C87D /* Matrix.swift in Sources */,
 				4F8661D023B8884200629889 /* Cifar10Reader.swift in Sources */,
+				4FEF5C4323CDA81200E026D2 /* d2.swift in Sources */,
+				4F59066523D1B44100FE4E8A /* backup.swift in Sources */,
 				4F9060FC23B49D2400B26B12 /* conv_m.metal in Sources */,
 				4F3581212351FA590037C87D /* Loss.swift in Sources */,
 				4F35811D2351F4660037C87D /* Layer.swift in Sources */,
-				4F8661CC23B7B6B500629889 /* MaxPooling+Metal.swift in Sources */,
+				4F8661CC23B7B6B500629889 /* MaxPool+Metal.swift in Sources */,
+				4F5E37CB23C373B4001546DC /* ThreadPool.swift in Sources */,
+				4F59065C23CE104100FE4E8A /* softmax.swift in Sources */,
 				4F8661E523B9E63A00629889 /* ModelStorage.swift in Sources */,
 				4F8661C823B7AFBF00629889 /* ReLU+Metal.swift in Sources */,
 				4FA9E9BE23A21590003C6730 /* LLVector.swift in Sources */,
+				4F59065F23D0BC5600FE4E8A /* AutoRunner.swift in Sources */,
+				4F59066123D1B13100FE4E8A /* CifarModel.swift in Sources */,
 				4F3581232351FCDC0037C87D /* ReLU.swift in Sources */,
 				4F16BAA323AF256D00E905D3 /* Dense+Metal.swift in Sources */,
 				4F16BAA123AF23A700E905D3 /* dense_m.metal in Sources */,
-				4F8661CA23B7B6A600629889 /* maxpooling_m.metal in Sources */,
+				4F8661CA23B7B6A600629889 /* maxpool_m.metal in Sources */,
+				4F59066323D1B2F100FE4E8A /* OXModel.swift in Sources */,
+				4F5A36D923C4A98A00D01E89 /* step_m.metal in Sources */,
 				4F8661F123BCC84B00629889 /* Storagable.swift in Sources */,
 				4F8661C623B7AFA300629889 /* relu_m.metal in Sources */,
 				4FBC046F23ACF8CA0072B9BE /* ImageReader.swift in Sources */,
 				4FBF5CB423B10071006763CB /* Core.swift in Sources */,
 				4F8661ED23BA4B2D00629889 /* BaseContainer.swift in Sources */,
-				4FC30B6223AB821C00D27427 /* MaxPooling.swift in Sources */,
+				4FC30B6223AB821C00D27427 /* MaxPool.swift in Sources */,
 				4F35811B2351F4060037C87D /* Sequential.swift in Sources */,
 				4F35810F2351B1050037C87D /* main.swift in Sources */,
 				4F276C9F23C07FC100D0403A /* NormalRandom.swift in Sources */,
@@ -445,6 +553,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -455,6 +564,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};

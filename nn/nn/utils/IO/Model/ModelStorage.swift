@@ -20,7 +20,8 @@ public class ModelStorage {
     
     public static func load(_ model: Container, path: String) {
         guard let file = fopen(path, "r") else {
-            fatalError("cannot read file \(path)")
+            print("cannot read file \(path)")
+            return
         }
         model.load(from: file)
         fclose(file)

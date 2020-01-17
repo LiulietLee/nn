@@ -99,19 +99,36 @@ public class Cifar10Reader: ImageReader {
         }
         
         let imageholder = NNArray(batchSize, 3, 32, 32)
-        let labelholder = NNArray(batchSize, 10)
+        let labelholder = NNArray(batchSize, labels.count)
 
         let pool = ThreadPool(count: batchSize)
         pool.run { (i) in
             let path = self.rootPath + "/train/" + self.trainingSet[self.trainIndex + i]
             _ = self.readImage(path: path, buffer: imageholder, batch: i)
             let label = self.getLabel(at: self.trainIndex + i, from: .train)
-            for j in 0..<10 {
+            for j in 0..<self.labels.count {
                 labelholder[i, j] = label[j]
             }
         }
         trainIndex += batchSize
         
         return (imageholder, labelholder)
+    }
+    
+    public func nextTest() -> (image: NNArray, label: Int)? {
+        if testIndex >= testSet.count {
+            testIndex = 0
+            return nil
+        }
+        
+        let imageholder = NNArray(1, 3, 32, 32)
+
+        let path = rootPath + "/test/" + testSet[testIndex]
+        _ = readImage(path: path, buffer: imageholder, batch: 1)
+        let label = getLabel(at: testIndex, from: .test).firstIndex(of: 1.0)!
+        
+        testIndex += 1
+        
+        return (imageholder, label)
     }
 }
