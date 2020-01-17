@@ -69,7 +69,7 @@ extension LLVector: Storagable {
     func save(to file: UnsafeMutablePointer<FILE>) {
         length.save(to: file)
         capacity.save(to: file)
-        fwrite(pointer, byteSize, 1, file)
+        fwrite(pointer, byteCount, 1, file)
     }
     
     static func load(from file: UnsafeMutablePointer<FILE>) -> Storagable {
@@ -77,7 +77,7 @@ extension LLVector: Storagable {
         let capacity = Int.load(from: file) as! Int
         let vec = LLVector<T>.init(capacity: capacity)
         vec.length = length
-        fread(vec.pointer, vec.byteSize, 1, file)
+        fread(vec.pointer, vec.byteCount, 1, file)
         return vec
     }
 }
