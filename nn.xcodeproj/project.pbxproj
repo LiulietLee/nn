@@ -23,8 +23,9 @@
 		4F59065C23CE104100FE4E8A /* softmax.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F59065B23CE104100FE4E8A /* softmax.swift */; };
 		4F59065F23D0BC5600FE4E8A /* AutoRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F59065E23D0BC5600FE4E8A /* AutoRunner.swift */; };
 		4F59066123D1B13100FE4E8A /* CifarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F59066023D1B13100FE4E8A /* CifarModel.swift */; };
-		4F59066323D1B2F100FE4E8A /* OXModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F59066223D1B2F100FE4E8A /* OXModel.swift */; };
 		4F59066523D1B44100FE4E8A /* backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F59066423D1B44100FE4E8A /* backup.swift */; };
+		4F5906EC23D21B8F00FE4E8A /* OXModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5906EB23D21B8F00FE4E8A /* OXModel.swift */; };
+		4F5906EF23D21C0000FE4E8A /* MNISTReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5906EE23D21C0000FE4E8A /* MNISTReader.swift */; };
 		4F5A36D723C4A3EA00D01E89 /* Step+Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5A36D623C4A3EA00D01E89 /* Step+Metal.swift */; };
 		4F5A36D923C4A98A00D01E89 /* step_m.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4F5A36D823C4A98A00D01E89 /* step_m.metal */; };
 		4F5E37CB23C373B4001546DC /* ThreadPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5E37CA23C373B4001546DC /* ThreadPool.swift */; };
@@ -79,8 +80,9 @@
 		4F59065B23CE104100FE4E8A /* softmax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = softmax.swift; sourceTree = "<group>"; };
 		4F59065E23D0BC5600FE4E8A /* AutoRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoRunner.swift; sourceTree = "<group>"; };
 		4F59066023D1B13100FE4E8A /* CifarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CifarModel.swift; sourceTree = "<group>"; };
-		4F59066223D1B2F100FE4E8A /* OXModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OXModel.swift; path = nn/OXModel.swift; sourceTree = "<group>"; };
 		4F59066423D1B44100FE4E8A /* backup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = backup.swift; sourceTree = "<group>"; };
+		4F5906EB23D21B8F00FE4E8A /* OXModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OXModel.swift; sourceTree = "<group>"; };
+		4F5906EE23D21C0000FE4E8A /* MNISTReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MNISTReader.swift; sourceTree = "<group>"; };
 		4F5A36D623C4A3EA00D01E89 /* Step+Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Step+Metal.swift"; sourceTree = "<group>"; };
 		4F5A36D823C4A98A00D01E89 /* step_m.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = step_m.metal; sourceTree = "<group>"; };
 		4F5E37CA23C373B4001546DC /* ThreadPool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadPool.swift; sourceTree = "<group>"; };
@@ -187,11 +189,10 @@
 		4F35810D2351B1050037C87D /* nn */ = {
 			isa = PBXGroup;
 			children = (
+				4F5906ED23D21BC800FE4E8A /* model */,
 				4F3581172351EF3C0037C87D /* nn */,
 				4F35810E2351B1050037C87D /* main.swift */,
 				4F59066423D1B44100FE4E8A /* backup.swift */,
-				4F59066223D1B2F100FE4E8A /* OXModel.swift */,
-				4F59066023D1B13100FE4E8A /* CifarModel.swift */,
 			);
 			path = nn;
 			sourceTree = "<group>";
@@ -271,6 +272,15 @@
 			path = Sync;
 			sourceTree = "<group>";
 		};
+		4F5906ED23D21BC800FE4E8A /* model */ = {
+			isa = PBXGroup;
+			children = (
+				4F59066023D1B13100FE4E8A /* CifarModel.swift */,
+				4F5906EB23D21B8F00FE4E8A /* OXModel.swift */,
+			);
+			path = model;
+			sourceTree = "<group>";
+		};
 		4F5A299823C6272E00862031 /* Dense */ = {
 			isa = PBXGroup;
 			children = (
@@ -316,6 +326,7 @@
 			children = (
 				4FBC046E23ACF8CA0072B9BE /* ImageReader.swift */,
 				4F8661CF23B8884200629889 /* Cifar10Reader.swift */,
+				4F5906EE23D21C0000FE4E8A /* MNISTReader.swift */,
 			);
 			path = Image;
 			sourceTree = "<group>";
@@ -409,8 +420,10 @@
 				4F8661CC23B7B6B500629889 /* MaxPool+Metal.swift in Sources */,
 				4F5E37CB23C373B4001546DC /* ThreadPool.swift in Sources */,
 				4F59065C23CE104100FE4E8A /* softmax.swift in Sources */,
+				4F5906EC23D21B8F00FE4E8A /* OXModel.swift in Sources */,
 				4F8661E523B9E63A00629889 /* ModelStorage.swift in Sources */,
 				4F8661C823B7AFBF00629889 /* ReLU+Metal.swift in Sources */,
+				4F5906EF23D21C0000FE4E8A /* MNISTReader.swift in Sources */,
 				4FA9E9BE23A21590003C6730 /* LLVector.swift in Sources */,
 				4F59065F23D0BC5600FE4E8A /* AutoRunner.swift in Sources */,
 				4F59066123D1B13100FE4E8A /* CifarModel.swift in Sources */,
@@ -418,7 +431,6 @@
 				4F16BAA323AF256D00E905D3 /* Dense+Metal.swift in Sources */,
 				4F16BAA123AF23A700E905D3 /* dense_m.metal in Sources */,
 				4F8661CA23B7B6A600629889 /* maxpool_m.metal in Sources */,
-				4F59066323D1B2F100FE4E8A /* OXModel.swift in Sources */,
 				4F5A36D923C4A98A00D01E89 /* step_m.metal in Sources */,
 				4F8661F123BCC84B00629889 /* Storagable.swift in Sources */,
 				4F8661C623B7AFA300629889 /* relu_m.metal in Sources */,
