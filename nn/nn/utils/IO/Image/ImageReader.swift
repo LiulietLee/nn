@@ -46,9 +46,9 @@ public class ImageReader {
                 autoreleasepool {
                     let pixelInfo = channel * ((imageWidth * j) + i)
                     
-                    arr[batch, 0, i, j] = Float(data[pixelInfo]) / 255.0
-                    arr[batch, 1, i, j] = Float(data[pixelInfo + 1]) / 255.0
-                    arr[batch, 2, i, j] = Float(data[pixelInfo + 2]) / 255.0
+                    arr[batch, 0, j, i] = Float(data[pixelInfo]) / 255.0
+                    arr[batch, 1, j, i] = Float(data[pixelInfo + 1]) / 255.0
+                    arr[batch, 2, j, i] = Float(data[pixelInfo + 2]) / 255.0
                 }
             }
         }
