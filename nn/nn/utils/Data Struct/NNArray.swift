@@ -111,7 +111,13 @@ public class NNArray: NSObject {
         let len = length == 0 ? acci[index.count - 1] : length
         let vec = LLVector<Float>(ptr, len, len)
         vec.freeable = false
-        let d = d.isEmpty ? [len] : d
+        var d = d
+        if d.isEmpty {
+            d = self.d
+            for i in 0..<index.count {
+                d[i] = 1
+            }
+        }
         return NNArray(vec, d: d)
     }
 }

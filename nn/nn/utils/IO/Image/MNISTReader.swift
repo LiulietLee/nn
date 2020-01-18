@@ -73,7 +73,7 @@ public class MNISTReader: ImageReader {
             return nil
         }
 
-        while trainDataLoadIndex < index {
+        while trainDataLoadIndex <= index {
             readData(&trainImage, &trainDataLoadIndex, file: trainDataFile)
         }
         
@@ -87,7 +87,7 @@ public class MNISTReader: ImageReader {
             return nil
         }
         
-        while testDataLoadIndex < index {
+        while testDataLoadIndex <= index {
             readData(&testImage, &testDataLoadIndex, file: testDataFile)
         }
 
@@ -108,11 +108,13 @@ public class MNISTReader: ImageReader {
 
         let img = trainImage.subArray(
             at: trainIndex,
-            length: batchSize * trainImage.acci[0]
+            length: batchSize * trainImage.acci[0],
+            d: [batchSize, 1, trainImage.d[2], trainImage.d[3]]
         )
         let label = trainLabel.subArray(
             at: trainIndex,
-            length: batchSize * trainLabel.acci[0]
+            length: batchSize * trainLabel.acci[0],
+            d: [batchSize, trainLabel.d[1]]
         )
         trainIndex += batchSize
         
