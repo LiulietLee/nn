@@ -44,14 +44,14 @@ extension Conv {
         let d = min(row * col, pipeline.maxTotalThreadsPerThreadgroup / w / h)
 
         var inputLength = input.count,
-        coreLength = convCore.count,
+        coreLength = core.count,
         biasLength = bias.count,
         scoreLength = score.count
         
         Core.encode(
             commandBuffer: commandBuffer,
             pipeline: pipeline,
-            buffers: Core.buffer(&info), Core.buffer(input), Core.buffer(convCore), Core.buffer(bias), Core.buffer(&inputLength), Core.buffer(&coreLength), Core.buffer(&biasLength), Core.buffer(&scoreLength), Core.buffer(score),
+            buffers: Core.buffer(&info), Core.buffer(input), Core.buffer(core), Core.buffer(bias), Core.buffer(&inputLength), Core.buffer(&coreLength), Core.buffer(&biasLength), Core.buffer(&scoreLength), Core.buffer(score),
             grid: [batchSize, count, row * col],
             thread: [w, h, d]
         )
@@ -73,14 +73,14 @@ extension Conv {
         let h = min(depth, pipeline.maxTotalThreadsPerThreadgroup / w)
         let d = min(input.d[2] * input.d[3], pipeline.maxTotalThreadsPerThreadgroup / w / h)
 
-        var coreLength = convCore.count,
+        var coreLength = core.count,
         deltaLength = delta.count,
         daLength = da.count
 
         Core.encode(
             commandBuffer: commandBuffer,
             pipeline: pipeline,
-            buffers: Core.buffer(&info), Core.buffer(convCore), Core.buffer(delta), Core.buffer(&coreLength), Core.buffer(&deltaLength), Core.buffer(&daLength), Core.buffer(da),
+            buffers: Core.buffer(&info), Core.buffer(core), Core.buffer(delta), Core.buffer(&coreLength), Core.buffer(&deltaLength), Core.buffer(&daLength), Core.buffer(da),
             grid: [batchSize, depth, input.d[2] * input.d[3]],
             thread: [w, h, d]
         )

@@ -10,7 +10,7 @@ import Foundation
 
 public class Conv: BaseLayer {
 
-    @objc dynamic var convCore = NNArray()
+    @objc dynamic var core = NNArray()
     @objc dynamic var bias: NNArray
     
     @objc dynamic var vcore = NNArray()
@@ -58,9 +58,9 @@ public class Conv: BaseLayer {
             row = (input.d[2] - width + padding * 2) / step + 1
             col = (input.d[3] - height + padding * 2) / step + 1
             
-            if convCore.d == [] {
-                convCore = NNArray(count, depth, width, height)
-                convCore.normalRandn(n: input.count + score.count)
+            if core.d == [] {
+                core = NNArray(count, depth, width, height)
+                core.normalRandn(n: input.count + score.count)
                 vcore = NNArray(batchSize, count, depth, width, height)
                 vbias = NNArray(batchSize, count)
                 mcore = NNArray(batchSize, count, depth, width, height)
@@ -88,7 +88,7 @@ public class Conv: BaseLayer {
                                 for z in 0..<depth {
                                     let rx = i * step + x - padding, ry = j * step + y - padding
                                     if inBound(rx, ry, input.d[2], input.d[3]) {
-                                        score[batch, c, i, j] += input[batch, z, rx, ry] * convCore[c, z, x, y]
+                                        score[batch, c, i, j] += input[batch, z, rx, ry] * core[c, z, x, y]
                                     }
                                 }
                             }
@@ -138,7 +138,7 @@ public class Conv: BaseLayer {
                                         let i = (rx + padding - x) / step
                                         let j = (ry + padding - y) / step
                                         if inBound(i, j, row, col) {
-                                            da[batch, z, rx, ry] += convCore[c, z, x, y] * delta[batch, c, i, j]
+                                            da[batch, z, rx, ry] += core[c, z, x, y] * delta[batch, c, i, j]
                                         }
                                     }
                                 }
@@ -174,7 +174,7 @@ public class Conv: BaseLayer {
             if needBias {
                 stepWithMetal(batch: batchSize, lr: lr, momentum: momentum, d: dbias, m: mbias, v: vbias, p: bias)
             }
-            stepWithMetal(batch: batchSize, lr: lr, momentum: momentum, d: dcore, m: mcore, v: vcore, p: convCore)
+            stepWithMetal(batch: batchSize, lr: lr, momentum: momentum, d: dcore, m: mcore, v: vcore, p: core)
             return
         }
         
@@ -187,11 +187,11 @@ public class Conv: BaseLayer {
                 }
             }
             
-            for i in 0..<convCore.count {
-                let idx = batch * convCore.count + i
+            for i in 0..<core.count {
+                let idx = batch * core.count + i
                 mcore[idx] = 0.9 * mcore[idx] + (1.0 - 0.9) * dcore[idx]
                 vcore[idx] = momentum * vcore[idx] + (1.0 - momentum) * dcore[idx] * dcore[idx]
-                convCore[i] -= lr * mcore[idx] / (sqrt(vcore[idx]) + 1e-8)
+                core[i] -= lr * mcore[idx] / (sqrt(vcore[idx]) + 1e-8)
             }
         }
     }
