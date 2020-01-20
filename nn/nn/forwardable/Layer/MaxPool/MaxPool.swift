@@ -39,6 +39,7 @@ public class MaxPool: BaseLayer {
     }
     
     public var switches = LLVector<SwitchMapper>()
+    var padding = 0
     var width = 0
     var height = 0
     var step = 0
@@ -46,21 +47,27 @@ public class MaxPool: BaseLayer {
     var row = 0
     var col = 0
     
-    public init(_ width: Int = 2, _ height: Int = 2, step: Int = 2) {
+    public init(_ width: Int, _ height: Int = -1, step: Int = 1, padding: Int = 0) {
         self.width = width
-        self.height = height
+        self.height = height <= 0 ? width : height
         self.step = step
+        self.padding = padding
+    }
+    
+    private func inBound(_ x: Int, _ y: Int, _ row: Int, _ col: Int) -> Bool {
+        return 0 <= x && x < row && 0 <= y && y < col
     }
     
     public override func forward(_ input: NNArray) -> NNArray {
         if batchSize == 0 {
             precondition(
-                (input.d[2] - width) % step == 0 &&
-                (input.d[3] - width) % step == 0
+                (input.d[2] - width + padding * 2) % step == 0 &&
+                (input.d[3] - height + padding * 2) % step == 0 &&
+                padding < width && padding < height
             )
             batchSize = input.d[0]
-            row = (input.d[2] - width) / step + 1
-            col = (input.d[3] - width) / step + 1
+            row = (input.d[2] - width + padding * 2) / step + 1
+            col = (input.d[3] - width + padding * 2) / step + 1
             switches = LLVector<SwitchMapper>(
                 capacity: batchSize * input.d[1] * row * col
             )
@@ -80,11 +87,12 @@ public class MaxPool: BaseLayer {
                     for j in 0..<col {
                         let rj = j * step
                         var maxPosition = (ri, rj)
-                        var maxValue = input[batch, k, ri, rj]
+                        var maxValue = inBound(ri, rj, input.d[2], input.d[3]) ? input[batch, k, ri, rj] : -Float.infinity
                         for x in 0..<width {
                             for y in 0..<height {
-                                let rx = ri + x, ry = rj + y
-                                if maxValue < input[batch, k, rx, ry] {
+                                let rx = ri + x - padding, ry = rj + y - padding
+                                if inBound(rx, ry, input.d[2], input.d[3]),
+                                    maxValue < input[batch, k, rx, ry] {
                                     maxValue = input[batch, k, rx, ry]
                                     maxPosition = (rx, ry)
                                 }
@@ -117,7 +125,7 @@ public class MaxPool: BaseLayer {
         
         for choose in switches {
             let i = choose.inputPosition, j = choose.outputPosition
-            da[i[0], i[1], i[2], i[3]] = delta[j[0], j[1], j[2], j[3]]
+            da[i[0], i[1], i[2], i[3]] += delta[j[0], j[1], j[2], j[3]]
         }
         
         return da

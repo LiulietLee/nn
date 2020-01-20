@@ -9,6 +9,8 @@
 #include <metal_stdlib>
 using namespace metal;
 
+#include "../../../utils/Metal/metal_utils.h"
+
 struct conv_layer_info {
     int3 core_size; // [depth, width, height]
     int3 in_size;   // [depth, width of input, height of input]
@@ -17,10 +19,6 @@ struct conv_layer_info {
     int stride;
     int padding;
 };
-
-bool in_bound(int x, int y, int row, int col) {
-    return 0 <= x && x < row && 0 <= y && col;
-}
 
 kernel void conv_forward(device const conv_layer_info &info,
                          device const float *input,

@@ -161,7 +161,7 @@ extension NNArray {
     /**
      - Important: Every shape of each buffer need to be the same value.
      */
-    public static func concat(_ buffers: [NNArray]) -> NNArray {
+    public static func concat(_ buffers: [NNArray], d: [Int] = []) -> NNArray {
         let res = NNArray([[buffers.count], buffers[0].d].flatMap { $0 })
 
         for i in 0..<buffers.count {
@@ -172,7 +172,7 @@ extension NNArray {
             )
         }
         
-        var d = buffers[0].d
+        var d = d.isEmpty ? buffers[0].d : d
         d[0] *= buffers.count
         res.dim(d)
         

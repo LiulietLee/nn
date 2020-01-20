@@ -15,6 +15,7 @@ extension MaxPool {
         var outSize: SIMD2<Int32>
         var inSize: SIMD3<Int32>
         var stride: Int32
+        var padding: Int32
         var batchSize: Int32
         
         init(_ obj: MaxPool, input: NNArray) {
@@ -22,6 +23,7 @@ extension MaxPool {
             outSize = SIMD2<Int32>(Int32(obj.row), Int32(obj.col))
             inSize = SIMD3<Int32>(Int32(input.d[1]), Int32(input.d[2]), Int32(input.d[3]))
             stride = Int32(obj.step)
+            padding = Int32(obj.padding)
             batchSize = Int32(obj.batchSize)
         }
     }
@@ -37,7 +39,7 @@ extension MaxPool {
         let commandBuffer = queue.makeCommandBuffer()!
         let w = min(batchSize, pipeline.threadExecutionWidth)
         let h = min(input.d[1], pipeline.maxTotalThreadsPerThreadgroup / w)
-        let d = min(row * col, max(1, pipeline.maxTotalThreadsPerThreadgroup / w / h))
+        let d = min(row * col, pipeline.maxTotalThreadsPerThreadgroup / w / h)
 
         Core.encode(
             commandBuffer: commandBuffer,
@@ -62,12 +64,16 @@ extension MaxPool {
         var info = PoolingLayerInfo(self, input: input)
         
         let commandBuffer = queue.makeCommandBuffer()!
+        let w = min(input.d[0], pipeline.threadExecutionWidth)
+        let h = min(input.d[1], pipeline.maxTotalThreadsPerThreadgroup / w)
+        let d = min(input.d[2] * input.d[3], pipeline.maxTotalThreadsPerThreadgroup / w / h)
+
         Core.encode(
             commandBuffer: commandBuffer,
             pipeline: pipeline,
             buffers: Core.buffer(&info), Core.buffer(switches), Core.buffer(delta), Core.buffer(da),
-            grid: [switches.count, 1, 1],
-            thread: [min(switches.count, 512), 1, 1]
+            grid: [input.d[0], input.d[1], input.d[2] * input.d[3]],
+            thread: [w, h, d]
         )
 
         commandBuffer.commit()

@@ -9,11 +9,14 @@
 #include <metal_stdlib>
 using namespace metal;
 
+#include "../../../utils/Metal/metal_utils.h"
+
 struct pooling_layer_info {
     int2 core_size;
     int2 out_size;
     int3 in_size;
     int stride;
+    int padding;
     int batch_size;
 };
 
@@ -34,14 +37,21 @@ kernel void maxpooling_forward(device const pooling_layer_info &info,
     int ri = i * info.stride;
     int rj = j * info.stride;
     int2 max_pos = {ri, rj};
-    float maxv = input[gid[0] * info.in_size[0] * info.in_size[1] * info.in_size[2] +
+    float maxv = -MAXFLOAT;
+    if (in_bound(ri, rj, info.in_size[1], info.in_size[2])) {
+        maxv = input[gid[0] * info.in_size[0] * info.in_size[1] * info.in_size[2] +
                      gid[1] * info.in_size[1] * info.in_size[2] +
                      ri * info.in_size[2] +
                      rj];
+    }
     
     for (int x = 0; x < info.core_size[0]; x++) {
         for (int y = 0; y < info.core_size[1]; y++) {
-            int rx = ri + x, ry = rj + y;
+            int rx = ri + x - info.padding, ry = rj + y - info.padding;
+            if (!in_bound(rx, ry, info.in_size[1], info.in_size[2])) {
+                continue;
+            }
+            
             float curv = input[gid[0] * info.in_size[0] * info.in_size[1] * info.in_size[2] +
                              gid[1] * info.in_size[1] * info.in_size[2] +
                              rx * info.in_size[2] +
@@ -59,10 +69,6 @@ kernel void maxpooling_forward(device const pooling_layer_info &info,
         gid[1] * info.out_size[0] * info.out_size[1] +
         gid[2];
     
-//    batch,
-//    Position(k, maxPosition.0, maxPosition.1),
-//    Position(k, i, j)
-
     int3 inpos = {(int)gid[1], max_pos[0], max_pos[1]};
     int3 outpos = {(int)gid[1], i, j};
     switches[index] = switch_mapper {
@@ -75,16 +81,37 @@ kernel void maxpooling_backward(device const pooling_layer_info &info,
                                 device const switch_mapper *switches,
                                 device const float *delta,
                                 device float *da,
-                                uint index [[ thread_position_in_grid ]])
+                                uint3 gid [[ thread_position_in_grid ]])
 {
-    switch_mapper m = switches[index];
-    da[m.batch * info.in_size[0] * info.in_size[1] * info.in_size[2] +
-       m.inpos[0] * info.in_size[1] * info.in_size[2] +
-       m.inpos[1] * info.in_size[2] +
-       m.inpos[2]]
-    =
-    delta[m.batch * info.in_size[0] * info.out_size[0] * info.out_size[1] +
-          m.outpos[0] * info.out_size[0] * info.out_size[1] +
-          m.outpos[1] * info.out_size[1] +
-          m.outpos[2]];
+    int batch = gid[0];
+    int k = gid[1];
+    int ri = gid[2] / info.in_size[2];
+    int rj = gid[2] % info.in_size[2];
+    
+    int pos =
+    batch * info.in_size[0] * info.in_size[1] * info.in_size[2] +
+    k * info.in_size[1] * info.in_size[2] +
+    ri * info.in_size[2] +
+    rj;
+    
+    int offi = (ri + info.padding) / info.core_size[0];
+    int offj = (rj + info.padding) / info.core_size[1];
+    
+    for (int i = offi - info.core_size[0] + info.padding + 1; i <= offi + info.padding; i++) {
+        for (int j = offj - info.core_size[1] + info.padding + 1; j <= offj + info.padding; j++) {
+            if (in_bound(i, j, info.out_size[0], info.out_size[1])) {
+                int index =
+                batch * info.in_size[0] * info.out_size[0] * info.out_size[1] +
+                k * info.out_size[0] * info.out_size[1] +
+                i * info.out_size[1] +
+                j;
+
+                switch_mapper m = switches[index];
+
+                if (m.inpos[1] == ri && m.inpos[2] == rj) {
+                    da[pos] += delta[index];
+                }
+            }
+        }
+    }
 }

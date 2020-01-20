@@ -23,7 +23,13 @@ public class Core {
     
     static var functionMap = [String: MTLFunction]()
     
+    static let mutex = DispatchSemaphore(value: 1)
+    
     static func function(_ name: String) -> MTLFunction {
+        mutex.wait()
+        defer {
+            mutex.signal()
+        }
         if let function = functionMap[name] {
             return function
         } else {
