@@ -11,4 +11,13 @@
 
 bool in_bound(int x, int y, int row, int col);
 
+struct pooling_layer_info {
+    int2 core_size;
+    int2 out_size;
+    int3 in_size;
+    int stride;
+    int padding;
+    int batch_size;
+};
+
 #endif /* metal_utils_h */
