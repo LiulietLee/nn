@@ -9,16 +9,7 @@
 #include <metal_stdlib>
 using namespace metal;
 
-#include "../../../utils/Metal/metal_utils.h"
-
-struct pooling_layer_info {
-    int2 core_size;
-    int2 out_size;
-    int3 in_size;
-    int stride;
-    int padding;
-    int batch_size;
-};
+#include "../../../../utils/Metal/metal_utils.h"
 
 struct switch_mapper {
     int batch;
@@ -94,12 +85,14 @@ kernel void maxpooling_backward(device const pooling_layer_info &info,
     ri * info.in_size[2] +
     rj;
     
-    int offi = (ri + info.padding) / info.core_size[0];
-    int offj = (rj + info.padding) / info.core_size[1];
-    
-    for (int i = offi - info.core_size[0] + info.padding + 1; i <= offi + info.padding; i++) {
-        for (int j = offj - info.core_size[1] + info.padding + 1; j <= offj + info.padding; j++) {
-            if (in_bound(i, j, info.out_size[0], info.out_size[1])) {
+    for (int i = 0; i < info.out_size[0]; i++) {
+        for (int j = 0; j < info.out_size[1]; j++) {
+            int lui = i * info.stride - info.padding;
+            int luj = j * info.stride - info.padding;
+            
+            if (lui <= ri && ri < lui + info.core_size[0] &&
+                luj <= rj && rj < luj + info.core_size[1]) {
+                
                 int index =
                 batch * info.in_size[0] * info.out_size[0] * info.out_size[1] +
                 k * info.out_size[0] * info.out_size[1] +

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class MaxPool: BaseLayer {
+public class MaxPool: BasePool {
     public struct Position {
         var p = SIMD3<Int32>()
         
@@ -39,20 +39,6 @@ public class MaxPool: BaseLayer {
     }
     
     public var switches = LLVector<SwitchMapper>()
-    var padding = 0
-    var width = 0
-    var height = 0
-    var step = 0
-    
-    var row = 0
-    var col = 0
-    
-    public init(_ width: Int, _ height: Int = -1, step: Int = 1, padding: Int = 0) {
-        self.width = width
-        self.height = height <= 0 ? width : height
-        self.step = step
-        self.padding = padding
-    }
     
     private func inBound(_ x: Int, _ y: Int, _ row: Int, _ col: Int) -> Bool {
         return 0 <= x && x < row && 0 <= y && y < col
