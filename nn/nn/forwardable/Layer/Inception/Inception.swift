@@ -8,6 +8,9 @@
 
 import Foundation
 
+/**
+ Maybe not work.
+ */
 public class Inception: BaseLayer {
     
     @objc dynamic var core = [Sequential]()
@@ -15,9 +18,7 @@ public class Inception: BaseLayer {
     var interDelta = [NNArray]()
     var input = NNArray()
     var outChannelIndex = [Int]()
-    
-    var pool = ThreadPool(count: 0)
-    
+
     public override init() {
         super.init()
     }
@@ -28,7 +29,6 @@ public class Inception: BaseLayer {
     
     private func placeholderPrepare() {
         if interScore.count == 0 {
-            pool = ThreadPool(count: core.count)
             interScore = [NNArray](repeating: NNArray(), count: core.count)
             interDelta = [NNArray](repeating: NNArray(), count: core.count)
         }
@@ -37,6 +37,7 @@ public class Inception: BaseLayer {
     public override func forward(_ input: NNArray) -> NNArray {
         placeholderPrepare()
         self.input = input.copy()
+        let pool = ThreadPool(count: core.count)
         pool.run { i in
             self.interScore[i] = self.core[i].forward(input)
         }
@@ -48,6 +49,7 @@ public class Inception: BaseLayer {
     
     public override func predict(_ input: NNArray) -> NNArray {
         placeholderPrepare()
+        let pool = ThreadPool(count: core.count)
         pool.run { i in
             self.interScore[i] = self.core[i].predict(input)
         }
@@ -70,7 +72,8 @@ public class Inception: BaseLayer {
                 idx += outputChannel
             }
         }
-        
+
+        let pool = ThreadPool(count: core.count)
         pool.run { i in
             let idx = self.outChannelIndex[i]
             let pattern = self.core[i].score.d
@@ -105,6 +108,7 @@ public class Inception: BaseLayer {
     
     public override func zeroGrad() {
         placeholderPrepare()
+        let pool = ThreadPool(count: core.count)
         pool.run { i in
             self.core[i].zeroGrad()
         }
@@ -112,6 +116,7 @@ public class Inception: BaseLayer {
     
     public override func step(lr: Float, momentum: Float) {
         placeholderPrepare()
+        let pool = ThreadPool(count: core.count)
         pool.run { i in
             self.core[i].step(lr: lr, momentum: momentum)
         }
