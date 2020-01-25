@@ -11,85 +11,61 @@ import MetalPerformanceShaders
 
 Core.device = MTLCreateSystemDefaultDevice()
 
-var net = Sequential()
+let reader = MNISTReader(
+    root: "/Users/liulietlee/Developer/tf/mnist",
+    batchSize: 4
+)
 
-net.add([
-    Conv(2, count: 3),
-    Conv(2, count: 3),
-    Conv(3),
-    MaxPooling(),
-    Dense(inFeatures: 9, outFeatures: 5),
-    Dense(inFeatures: 5, outFeatures: 5),
-    Dense(inFeatures: 5, outFeatures: 2)
-])
-
-let img = NNArray(10, 10, 3, initValue: 1.0)
-let label = NNArray([1.0, 0.0])
+let net = mnistModel
 
 func train() {
-    for i in 0..<20 {
-        let score = net.forward(img)
-        let loss = net.loss(label)
-        net.backward(label, rate: 0.1)
-        
-        print("\(i) loss: \(loss) score: \(score.map { $0 })")
+//    ModelStorage.load(net, path: "mnistmodel04.nnm")
+
+    for i in 0..<1000 {
+        autoreleasepool {
+            var runningLoss: Float = 0.0
+            reader.trainIndex = 0
+            while let (img, label) = reader.nextTrain() {
+                net.zeroGrad()
+                let _ = net.forward(img)
+                let loss = net.loss(label)
+                net.backward(label)
+                net.step(lr: 0.002, momentum: 0.99)
+                runningLoss = max(runningLoss, loss)
+                
+                if reader.trainIndex % 400 == 8 {
+                    print("[\(i), \(reader.trainIndex)] loss: \(runningLoss)")
+//                    print(score)
+                    runningLoss = 0.0
+//                    ModelStorage.save(net, path: "mnistmodel04.nnm")
+                    break
+                }
+            }
+        }
     }
     
-    ModelStorage.save(net, path: "a.txt")
+//    ModelStorage.save(net, path: "mnistmodel04.nnm")
 }
 
 func test() {
-    ModelStorage.load(net, path: "a.txt")
+    ModelStorage.load(net, path: "mnistmodel04.nnm")
     
-    let score = net.forward(img)
-    let loss = net.loss(label)
-    print("test: - loss: \(loss) score: \(score.map { $0 })")
-}
-
-test()
-//train()
-
-/*
- let reader = Cifar10Reader(root: "/Users/liulietlee/Developer/tf/cifar/cifar")
-
-print("train.")
-
-for i in 0..<120 {
-    var runningLoss = 0.0
-    
-    for index in 0..<20 {
-        autoreleasepool {
-            let (input, n) = reader.getTest(index)!
-            let label = NNArray((0..<10).map { $0 == n ? 1.0 : 0.0 })
-            let _ = net.forward(input)
-            let loss = net.loss(label)
-            net.backward(label, rate: 0.001)
-            runningLoss += Double(loss)
+    var count = 0
+    var idx = 0
+    while let (img, label) = reader.nextTest() {
+        let score = net.forward(img)
+        let pred = score.indexOfMax()
+        if pred == label {
+            count += 1
+            print("\(idx): Y \(pred) == \(label)")
+        } else {
+            print("\(idx): N \(pred) != \(label)")
         }
+        idx += 1
+        if idx >= 100 { break }
     }
-
-    print("[\(i)] loss: \(runningLoss / 20)")
-    runningLoss = 0.0
+    print("correct: \(count)")
 }
 
-print("test.")
-
-var count = 0
-for index in 0..<20 {
-    let (input, label) = reader.getTest(index)!
-    let score = net.forward(input)
-    var maxi = 0
-    for i in 1..<score.count {
-        if score[i] > score[maxi] {
-            maxi = i
-        }
-    }
-    print("[\(index)] pred: \(maxi), label: \(label)")
-    print(score.map{ $0 })
-    if maxi == label {
-        count += 1
-    }
-}
-
-print("\(count)/20")
-*/
+train()
+//test()

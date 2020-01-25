@@ -159,22 +159,22 @@ extension NNArray: MutableCollection {}
 
 extension NNArray {
     /**
-     - Important: Every shape of each buffer need to be the same value.
+     - Important: Every shape of each buffer need to be the same height and width.
      */
     public static func concat(_ buffers: [NNArray], d: [Int] = []) -> NNArray {
-        let res = NNArray([[buffers.count], buffers[0].d].flatMap { $0 })
-
-        for i in 0..<buffers.count {
-            memcpy(
-                res.subArray(at: i).data.pointer,
-                buffers[i].data.pointer,
-                buffers[i].data.byteCount
-            )
+        var d = d
+        if d.isEmpty {
+            d = [buffers.reduce(0, { (res, buf) -> Int in
+                return res + buf.d.reduce(1, *)
+            })]
         }
-        
-        var d = d.isEmpty ? buffers[0].d : d
-        d[0] *= buffers.count
-        res.dim(d)
+        let res = NNArray(d)
+        var src = res.data.pointer!
+
+        for buf in buffers {
+            memcpy(src, buf.data.pointer, buf.data.byteCount)
+            src = src.advanced(by: buf.data.byteCount)
+        }
         
         return res
     }

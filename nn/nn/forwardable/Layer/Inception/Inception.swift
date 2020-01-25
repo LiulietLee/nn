@@ -28,9 +28,22 @@ public class Inception: BaseLayer {
     }
     
     private func placeholderPrepare() {
-        if interScore.count == 0 {
+        if interScore.isEmpty {
             interScore = [NNArray](repeating: NNArray(), count: core.count)
             interDelta = [NNArray](repeating: NNArray(), count: core.count)
+        }
+    }
+    
+    private func outChannelIndexPrepare() {
+        if outChannelIndex.isEmpty {
+            var idx = 0
+            for c in core {
+                outChannelIndex.append(idx)
+                let pattern = c.score.d
+                let outputChannel = pattern[1]
+                idx += outputChannel
+            }
+            outChannelIndex.append(idx)
         }
     }
     
@@ -41,7 +54,12 @@ public class Inception: BaseLayer {
         pool.run { i in
             self.interScore[i] = self.core[i].forward(input)
         }
-        score = NNArray.concat(interScore)
+        
+        outChannelIndexPrepare()
+        score = NNArray.concat(
+            interScore,
+            d: [input.d[0], outChannelIndex.last!, input.d[2], input.d[3]]
+        )
         score.d[1] *= score.d[0] / input.d[0]
         score.d[0] = input.d[0]
         return score
@@ -53,7 +71,12 @@ public class Inception: BaseLayer {
         pool.run { i in
             self.interScore[i] = self.core[i].predict(input)
         }
-        score = NNArray.concat(interScore)
+        
+        outChannelIndexPrepare()
+        score = NNArray.concat(
+            interScore,
+            d: [input.d[0], outChannelIndex.last!, input.d[2], input.d[3]]
+        )
         score.d[1] *= score.d[0] / input.d[0]
         score.d[0] = input.d[0]
         return score
@@ -62,17 +85,8 @@ public class Inception: BaseLayer {
     @discardableResult
     public override func backward(_ input: NNArray, delta: NNArray) -> NNArray {
         placeholderPrepare()
-
-        if outChannelIndex.isEmpty {
-            var idx = 0
-            for c in core {
-                outChannelIndex.append(idx)
-                let pattern = c.score.d
-                let outputChannel = pattern[1]
-                idx += outputChannel
-            }
-        }
-
+        outChannelIndexPrepare()
+        
         let pool = ThreadPool(count: core.count)
         pool.run { i in
             let idx = self.outChannelIndex[i]
@@ -88,7 +102,10 @@ public class Inception: BaseLayer {
                     )
                 )
             }
-            let subDelta = NNArray.concat(subDeltas)
+            let subDelta = NNArray.concat(
+                subDeltas,
+                d: [delta.d[0], outputChannel, delta.d[2], delta.d[3]]
+            )
             self.interDelta[i] = self.core[i].backward(input, delta: subDelta)
         }
         

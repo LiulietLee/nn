@@ -61,7 +61,7 @@ extension Loss {
                     batchDelta(score: score.subArray(at: i), label: label.subArray(at: i))
                 )
             }
-            return NNArray.concat(res).dim(score.d)
+            return NNArray.concat(res, d: score.d)
         }
     }
 }
