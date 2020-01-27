@@ -13,59 +13,58 @@ Core.device = MTLCreateSystemDefaultDevice()
 
 let reader = MNISTReader(
     root: "/Users/liulietlee/Developer/tf/mnist",
-    batchSize: 4
+    batchSize: 16
 )
 
 let net = mnistModel
 
 func train() {
-//    ModelStorage.load(net, path: "mnistmodel04.nnm")
+    ModelStorage.load(net, path: "mnistmodel04.nnm")
 
-    for i in 0..<1000 {
+    for i in 0..<10 {
         autoreleasepool {
             var runningLoss: Float = 0.0
-            reader.trainIndex = 0
+//            reader.trainIndex = 0
             while let (img, label) = reader.nextTrain() {
                 net.zeroGrad()
                 let _ = net.forward(img)
                 let loss = net.loss(label)
                 net.backward(label)
-                net.step(lr: 0.002, momentum: 0.99)
+                net.step(lr: 0.00008, momentum: 0.99)
                 runningLoss = max(runningLoss, loss)
                 
-                if reader.trainIndex % 400 == 8 {
+                if reader.trainIndex % 1600 == 1584 {
                     print("[\(i), \(reader.trainIndex)] loss: \(runningLoss)")
 //                    print(score)
                     runningLoss = 0.0
-//                    ModelStorage.save(net, path: "mnistmodel04.nnm")
-                    break
+                    ModelStorage.save(net, path: "mnistmodel04.nnm")
+//                    break
                 }
             }
         }
     }
     
-//    ModelStorage.save(net, path: "mnistmodel04.nnm")
+    ModelStorage.save(net, path: "mnistmodel04.nnm")
 }
 
 func test() {
-    ModelStorage.load(net, path: "mnistmodel04.nnm")
+    ModelStorage.load(net, path: "mnistmodel.nnm")
     
-    var count = 0
-    var idx = 0
+    var cor = 0
+    var tot = 0
     while let (img, label) = reader.nextTest() {
         let score = net.forward(img)
         let pred = score.indexOfMax()
         if pred == label {
-            count += 1
-            print("\(idx): Y \(pred) == \(label)")
+            cor += 1
+            print("\(tot): Y \(pred) == \(label)")
         } else {
-            print("\(idx): N \(pred) != \(label)")
+            print("\(tot): N \(pred) != \(label)")
         }
-        idx += 1
-        if idx >= 100 { break }
+        tot += 1
     }
-    print("correct: \(count)")
+    print("correct: \(cor) / \(tot)")
 }
 
-train()
-//test()
+//train()
+test()

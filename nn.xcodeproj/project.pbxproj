@@ -45,10 +45,7 @@
 		4FB50DD223D2E2FB00D531F3 /* MNISTModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FB50DD123D2E2FB00D531F3 /* MNISTModel.swift */; };
 		4FBC046F23ACF8CA0072B9BE /* ImageReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBC046E23ACF8CA0072B9BE /* ImageReader.swift */; };
 		4FBF5CB423B10071006763CB /* Core.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FBF5CB323B10070006763CB /* Core.swift */; };
-		4FC2B38223D44B5300418EE6 /* Inception.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC2B38123D44B5300418EE6 /* Inception.swift */; };
 		4FC2B38623D49AD700418EE6 /* metal_utils.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4FC2B38523D49AD700418EE6 /* metal_utils.metal */; };
-		4FC2B38823D4CCED00418EE6 /* inception_m.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4FC2B38723D4CCED00418EE6 /* inception_m.metal */; };
-		4FC2B38A23D4CCF800418EE6 /* Inception+Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC2B38923D4CCF800418EE6 /* Inception+Metal.swift */; };
 		4FC30B6223AB821C00D27427 /* MaxPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FC30B6123AB821C00D27427 /* MaxPool.swift */; };
 		4FEF5C4123CDA7F000E026D2 /* svm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEF5C4023CDA7F000E026D2 /* svm.swift */; };
 		4FEF5C4323CDA81200E026D2 /* d2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FEF5C4223CDA81200E026D2 /* d2.swift */; };
@@ -106,11 +103,8 @@
 		4FB50DD123D2E2FB00D531F3 /* MNISTModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MNISTModel.swift; sourceTree = "<group>"; };
 		4FBC046E23ACF8CA0072B9BE /* ImageReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageReader.swift; sourceTree = "<group>"; };
 		4FBF5CB323B10070006763CB /* Core.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Core.swift; sourceTree = "<group>"; };
-		4FC2B38123D44B5300418EE6 /* Inception.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Inception.swift; sourceTree = "<group>"; };
 		4FC2B38423D49AAF00418EE6 /* metal_utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = metal_utils.h; sourceTree = "<group>"; };
 		4FC2B38523D49AD700418EE6 /* metal_utils.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = metal_utils.metal; sourceTree = "<group>"; };
-		4FC2B38723D4CCED00418EE6 /* inception_m.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = inception_m.metal; sourceTree = "<group>"; };
-		4FC2B38923D4CCF800418EE6 /* Inception+Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Inception+Metal.swift"; sourceTree = "<group>"; };
 		4FC30B6123AB821C00D27427 /* MaxPool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxPool.swift; sourceTree = "<group>"; };
 		4FEF5C4023CDA7F000E026D2 /* svm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = svm.swift; sourceTree = "<group>"; };
 		4FEF5C4223CDA81200E026D2 /* d2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = d2.swift; sourceTree = "<group>"; };
@@ -153,7 +147,6 @@
 				4F35811C2351F4660037C87D /* Layer.swift */,
 				4F8661EA23BA49C300629889 /* BaseLayer.swift */,
 				4F9B11BE23D86DA5006B9CCF /* Pool */,
-				4FC2B38323D454B300418EE6 /* Inception */,
 				4F37AA2223C8CE51007B0581 /* Conv */,
 				4F37AA2123C8CCF3007B0581 /* ReLU */,
 				4F5A299823C6272E00862031 /* Dense */,
@@ -352,16 +345,6 @@
 			path = Pool;
 			sourceTree = "<group>";
 		};
-		4FC2B38323D454B300418EE6 /* Inception */ = {
-			isa = PBXGroup;
-			children = (
-				4FC2B38123D44B5300418EE6 /* Inception.swift */,
-				4FC2B38923D4CCF800418EE6 /* Inception+Metal.swift */,
-				4FC2B38723D4CCED00418EE6 /* inception_m.metal */,
-			);
-			path = Inception;
-			sourceTree = "<group>";
-		};
 		4FEF5C3F23CDA7DF00E026D2 /* Loss */ = {
 			isa = PBXGroup;
 			children = (
@@ -440,7 +423,6 @@
 				4F8661EB23BA49C300629889 /* BaseLayer.swift in Sources */,
 				4F5A36D723C4A3EA00D01E89 /* Step+Metal.swift in Sources */,
 				4F276C9D23C0754000D0403A /* Forwardable.swift in Sources */,
-				4FC2B38A23D4CCF800418EE6 /* Inception+Metal.swift in Sources */,
 				4FA87005239D41710043D957 /* Conv.swift in Sources */,
 				4F3581162351EB190037C87D /* Matrix.swift in Sources */,
 				4F8661D023B8884200629889 /* Cifar10Reader.swift in Sources */,
@@ -448,7 +430,6 @@
 				4FC2B38623D49AD700418EE6 /* metal_utils.metal in Sources */,
 				4FEF5C4323CDA81200E026D2 /* d2.swift in Sources */,
 				4F9B11BD23D86BF1006B9CCF /* averagepool_m.metal in Sources */,
-				4FC2B38223D44B5300418EE6 /* Inception.swift in Sources */,
 				4F9060FC23B49D2400B26B12 /* conv_m.metal in Sources */,
 				4F3581212351FA590037C87D /* Loss.swift in Sources */,
 				4F35811D2351F4660037C87D /* Layer.swift in Sources */,
@@ -474,7 +455,6 @@
 				4F35811B2351F4060037C87D /* Sequential.swift in Sources */,
 				4F35810F2351B1050037C87D /* main.swift in Sources */,
 				4F276C9F23C07FC100D0403A /* NormalRandom.swift in Sources */,
-				4FC2B38823D4CCED00418EE6 /* inception_m.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

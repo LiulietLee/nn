@@ -15,7 +15,9 @@ public class NNArray: NSObject {
     var d = [Int]()
     var acci = [Int]()
     
-    public override var description: String { return "\(map { $0 })" }
+    public override var description: String {
+        return "shape: \(d)\ncontent:\n\(map { $0 })"
+    }
     
     public override init() {
         data = Pointer()
@@ -118,6 +120,13 @@ public class NNArray: NSObject {
                 d[i] = 1
             }
         }
+        return NNArray(vec, d: d)
+    }
+    
+    public func subArray(pos: Int, length: Int, d: [Int]) -> NNArray {
+        let vec = LLVector<Float>(repeaing: 0.0, count: length)
+        let ptr = data.pointer.advanced(by: pos * vec.stride)
+        memcpy(vec.pointer, ptr, length * vec.stride)
         return NNArray(vec, d: d)
     }
 }
