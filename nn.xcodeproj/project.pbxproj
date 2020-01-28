@@ -12,7 +12,6 @@
 		4F276C9D23C0754000D0403A /* Forwardable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F276C9C23C0754000D0403A /* Forwardable.swift */; };
 		4F276C9F23C07FC100D0403A /* NormalRandom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F276C9E23C07FC100D0403A /* NormalRandom.swift */; };
 		4F35810F2351B1050037C87D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F35810E2351B1050037C87D /* main.swift */; };
-		4F3581162351EB190037C87D /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3581152351EB190037C87D /* Matrix.swift */; };
 		4F3581192351EF820037C87D /* Dense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3581182351EF820037C87D /* Dense.swift */; };
 		4F35811B2351F4060037C87D /* Sequential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F35811A2351F4060037C87D /* Sequential.swift */; };
 		4F35811D2351F4660037C87D /* Layer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F35811C2351F4660037C87D /* Layer.swift */; };
@@ -70,7 +69,6 @@
 		4F276C9E23C07FC100D0403A /* NormalRandom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NormalRandom.swift; sourceTree = "<group>"; };
 		4F35810B2351B1050037C87D /* nn */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = nn; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F35810E2351B1050037C87D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		4F3581152351EB190037C87D /* Matrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
 		4F3581182351EF820037C87D /* Dense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dense.swift; sourceTree = "<group>"; };
 		4F35811A2351F4060037C87D /* Sequential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequential.swift; sourceTree = "<group>"; };
 		4F35811C2351F4660037C87D /* Layer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layer.swift; sourceTree = "<group>"; };
@@ -288,7 +286,6 @@
 		4F8661CD23B887AB00629889 /* Data Struct */ = {
 			isa = PBXGroup;
 			children = (
-				4F3581152351EB190037C87D /* Matrix.swift */,
 				4FA9E9BD23A21590003C6730 /* LLVector.swift */,
 				4FA87002239D404C0043D957 /* NNArray.swift */,
 				4F276C9E23C07FC100D0403A /* NormalRandom.swift */,
@@ -424,7 +421,6 @@
 				4F5A36D723C4A3EA00D01E89 /* Step+Metal.swift in Sources */,
 				4F276C9D23C0754000D0403A /* Forwardable.swift in Sources */,
 				4FA87005239D41710043D957 /* Conv.swift in Sources */,
-				4F3581162351EB190037C87D /* Matrix.swift in Sources */,
 				4F8661D023B8884200629889 /* Cifar10Reader.swift in Sources */,
 				4F9B11C023D86DBB006B9CCF /* BasePool.swift in Sources */,
 				4FC2B38623D49AD700418EE6 /* metal_utils.metal in Sources */,

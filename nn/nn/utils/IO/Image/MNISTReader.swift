@@ -8,6 +8,9 @@
 
 import Foundation
 
+/**
+ MNIST handwritten digit database reader.
+ */
 public class MNISTReader: ImageReader {
     
     var rootPath = String()
@@ -40,13 +43,25 @@ public class MNISTReader: ImageReader {
     }
     
     /**
-     - Description: Expected file structure:
+     Set the path to MNIST dataset and batch size.
+     
+     Recommended data download method:
+     ```
+     curl -O http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz
+     curl -O http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz
+     curl -O http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz
+     curl -O http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz
+     gunzip t*-ubyte.gz
+     ```
+     
+     Expected file structure:
      ```
      |-- root
      |   |-- t10k-images-idx3-ubyte
      |   |-- t10k-labels-idx1-ubyte
      |   |-- train-images-idx3-ubyte
      |   |-- train-labels-idx1-ubyte
+     |   |-- ...
      ```
      */
     public init(root: String, batchSize: Int) {

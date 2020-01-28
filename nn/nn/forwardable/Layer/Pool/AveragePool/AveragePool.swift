@@ -8,12 +8,26 @@
 
 import Foundation
 
+/**
+ 2D Average Pooling Layer (underbuilding yet).
+ 
+ The step and the size have to be the same value because of the uncompleted backward function. So it's recommended to only specify the width value.
+ */
 public class AveragePool: BasePool {
     
-    public init(_ width: Int, _ height: Int = -1) {
-        super.init(width, height, step: width)
+    /**
+     - parameter width: Size of the convolving kernel.
+     */
+    public init(_ width: Int) {
+        super.init(width, step: width)
     }
     
+    /**
+     Call this function to do prediction.
+     
+     - parameter input: Shape: [batch_size, input_channel, height, width]
+     - returns: Shape: [batch_size, input_channel, output_height, output_width]
+     */
     public override func forward(_ input: NNArray) -> NNArray {
         if batchSize == 0 {
             precondition(

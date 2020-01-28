@@ -8,6 +8,9 @@
 
 import Foundation
 
+/**
+ 2D Max Pooling Layer.
+ */
 public class MaxPool: BasePool {
     public struct Position {
         var p = SIMD3<Int32>()
@@ -44,6 +47,12 @@ public class MaxPool: BasePool {
         return 0 <= x && x < row && 0 <= y && y < col
     }
     
+    /**
+     Call this function to do prediction.
+     
+     - parameter input: Shape: [batch_size, input_channel, height, width]
+     - returns: Shape: [batch_size, input_channel, output_height, output_width]
+     */
     public override func forward(_ input: NNArray) -> NNArray {
         if batchSize == 0 {
             precondition(

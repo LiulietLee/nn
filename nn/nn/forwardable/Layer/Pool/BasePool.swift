@@ -18,6 +18,12 @@ public class BasePool: BaseLayer {
     var row = 0
     var col = 0
     
+    /**
+     - parameter width: Size of the convolving kernel.
+     - parameter height: Ignore this.
+     - parameter step: Stride for convolution.
+     - parameter padding: Zero-padding added to both sides of the input.
+     */
     public init(_ width: Int, _ height: Int = -1, step: Int = 1, padding: Int = 0) {
         self.width = width
         self.height = height <= 0 ? width : height

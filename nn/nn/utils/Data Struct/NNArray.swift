@@ -8,11 +8,38 @@
 
 import Foundation
 
+/**
+ Data Container.
+ 
+ An inefficient data storage container, responsible for model parameter storage and data communication between neural network layers.
+ 
+ ```
+ let buf = NNArray(4, 3, 28, 28)
+ ```
+ means a NNArray called `buf`. Batch size is 4, number of channel is 3 (red green blue), size is 28 x 28 (height x width).
+ 
+ There are 2 way to access elements in NNArray.
+ ```
+ // first way
+ let e1 = buf[0, 1, 1, 2]
+ 
+ // second way
+ let e2 = buf[1 * 28 * 28 + 1 * 28 + 2]
+ 
+ assert(e1 == e2)
+ ```
+ */
 public class NNArray: NSObject {
     public typealias Pointer = LLVector<Float>
     
     public var data: Pointer!
-    var d = [Int]()
+    
+    /**
+     Shape of NNArray.
+     
+     Use `dim()` to change this value at runtime. Do not set this value directly unless you know what you are doing.
+     */
+    public var d = [Int]()
     var acci = [Int]()
     
     public override var description: String {
@@ -56,11 +83,23 @@ public class NNArray: NSObject {
         setAcci()
     }
 
+    /**
+     Change the shape of current array.
+     
+     - parameter d: Product of `d` should be the same value as the old one.
+     - returns: Self
+     */
     @discardableResult
     public func dim(_ d: Int...) -> NNArray {
         return dim(d)
     }
     
+    /**
+     Change the shape of current array.
+     
+     - parameter d: Product of `d` should be the same value as the old one.
+     - returns: Self
+     */
     @discardableResult
     public func dim(_ d: [Int]) -> NNArray {
         precondition(d.reduce(1, *) == count)
@@ -168,6 +207,8 @@ extension NNArray: MutableCollection {}
 
 extension NNArray {
     /**
+     Concat multiple NNArrays to one NNArray.
+     
      - Important: Every shape of each buffer need to be the same height and width.
      */
     public static func concat(_ buffers: [NNArray], d: [Int] = []) -> NNArray {

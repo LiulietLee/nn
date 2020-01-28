@@ -9,6 +9,9 @@
 import Foundation
 import MetalPerformanceShaders
 
+/**
+ Metal Core.
+ */
 public class Core {
     
     public static var device: MTLDevice? = nil {
@@ -95,9 +98,7 @@ public class Core {
         captureDescriptor.captureObject = Core.device
         do {
             try captureManager.startCapture(with: captureDescriptor)
-        }
-        catch
-        {
+        } catch {
             fatalError("error when trying to capture: \(error)")
         }
     }

@@ -8,6 +8,24 @@
 
 import Foundation
 
+/**
+ Write models to file and read it back.
+ 
+ There is no limit to the choice of the file name and extension name.
+ 
+ For example:
+ 
+ For MacOS:
+ ```
+ ModelStorage.save(model, path: "mnistmodel01.nnm")
+ ModelStorage.load(model, path: "mnistmodel01.nnm")
+ ```
+ For iOS:
+ ```
+ let path = Bundle.main.path(forResource: "mnistmodel01", ofType: "nnm")!
+ ModelStorage.load(model, path: path)
+ ```
+ */
 public class ModelStorage {
     
     public static func save(_ model: Container, path: String) {

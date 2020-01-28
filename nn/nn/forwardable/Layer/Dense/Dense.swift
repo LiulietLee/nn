@@ -8,6 +8,11 @@
 
 import Foundation
 
+/**
+ Fully Connected Layer.
+ 
+ `Y = WX + b`
+ */
 public class Dense: BaseLayer {
     var inFeatures = 0
     var outFeatures = 0
@@ -28,6 +33,12 @@ public class Dense: BaseLayer {
     var dparam = NNArray()
     var dbias = NNArray()
     
+    /**
+     - parameter inFeatures: Size of each input sample.
+     - parameter outFeatures: Size of each output sample.
+     - parameter bias: Whether to use bias.
+     - parameter relu: Whether to use relu.
+     */
     public init(inFeatures: Int, outFeatures: Int, bias: Bool = true, relu: Bool = true) {
         self.inFeatures = inFeatures
         self.outFeatures = outFeatures
@@ -39,6 +50,12 @@ public class Dense: BaseLayer {
         param.normalRandn(n: outFeatures + inFeatures)
     }
     
+    /**
+     Call this function to do prediction.
+     
+     - parameter input: Shape: [batch_size, inFeatures]
+     - returns: Shape: [batch_size, outFeatures]
+     */
     public override func forward(_ input: NNArray) -> NNArray {
         if batchSize == 0 {
             batchSize = input.d[0]

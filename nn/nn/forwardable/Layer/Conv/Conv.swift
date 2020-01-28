@@ -8,6 +8,9 @@
 
 import Foundation
 
+/**
+ 2D Convolution Layer
+ */
 public class Conv: BaseLayer {
 
     @objc dynamic var core = NNArray()
@@ -33,6 +36,16 @@ public class Conv: BaseLayer {
     var step = 0
     var padding = 0
     
+    /**
+     Unlike PyTorch, you don't need to specify the input channel, which will be set automatically while the first time of `forward()` function execution.
+     
+     - parameter width: Size of the convolving kernel.
+     - parameter height: Ignore this.
+     - parameter count: Number of channels produced by the convolution.
+     - parameter step: Stride for convolution.
+     - parameter padding: Zero-padding added to both sides of the input.
+     - parameter bias: Whether to use bias.
+     */
     public init(_ width: Int, _ height: Int = -1, count: Int = 1, step: Int = 1, padding: Int = 0, bias: Bool = true) {
         self.width = width
         self.height = height < 0 ? width : height
@@ -47,6 +60,12 @@ public class Conv: BaseLayer {
         return 0 <= x && x < row && 0 <= y && y < col
     }
     
+    /**
+     Call this function to do prediction.
+     
+     - parameter input: Shape: [batch_size, input_channel, height, width]
+     - returns: Shape: [batch_size, count, output_height, output_width]
+     */
     public override func forward(_ input: NNArray) -> NNArray {
         if batchSize == 0 {
             precondition(

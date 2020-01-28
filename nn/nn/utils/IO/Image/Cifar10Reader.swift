@@ -9,6 +9,9 @@
 import Foundation
 import CoreImage
 
+/**
+The CIFAR-10 dataset reader.
+*/
 public class Cifar10Reader: ImageReader {
     
     var rootPath = String()

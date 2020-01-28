@@ -8,6 +8,11 @@
 
 import Foundation
 
+/**
+ Leaky ReLU.
+ 
+ `Y = max(0.001 * X, X)`
+ */
 public class ReLU: BaseLayer {
     
     public override func forward(_ input: NNArray) -> NNArray {

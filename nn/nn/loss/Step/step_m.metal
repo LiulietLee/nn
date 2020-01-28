@@ -19,10 +19,6 @@ kernel void param_step(device const int &batch,
                        device float *p,
                        uint i [[ thread_position_in_grid ]])
 {
-//                    m = beta1*m + (1-beta1)*dx
-//                    v = beta2*v + (1-beta2)*(dx**2)
-//                    x += - learning_rate * m / (np.sqrt(v) + eps)
-
     for (int j = 0; j < batch; j++) {
         int idx = j * count + i;
         m[idx] = 0.9 * m[idx] + (1 - 0.9) * d[idx];

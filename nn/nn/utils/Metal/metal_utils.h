@@ -9,8 +9,6 @@
 #ifndef metal_utils_h
 #define metal_utils_h
 
-bool in_bound(int x, int y, int row, int col);
-
 struct pooling_layer_info {
     int2 core_size;
     int2 out_size;
@@ -19,5 +17,7 @@ struct pooling_layer_info {
     int padding;
     int batch_size;
 };
+
+bool in_bound(int x, int y, int row, int col);
 
 #endif /* metal_utils_h */

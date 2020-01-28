@@ -118,14 +118,3 @@ extension NNArray: Storagable {
         return arr
     }
 }
-
-extension Matrix: Storagable {
-    func save(to file: UnsafeMutablePointer<FILE>) {
-        _data.save(to: file)
-    }
-    
-    static func load(from file: UnsafeMutablePointer<FILE>) -> Storagable {
-        let arr = NNArray.load(from: file) as! NNArray
-        return Matrix(arr)
-    }
-}
