@@ -11,7 +11,7 @@ import Foundation
 /**
  MNIST handwritten digit database reader.
  */
-public class MNISTReader: ImageReader {
+public class MNISTReader: DatasetReader {
     
     var rootPath = String()
     
@@ -24,11 +24,7 @@ public class MNISTReader: ImageReader {
     var testSetSize: Int { testImage.d[0] }
     var trainIndex = 0
     var testIndex = 0
-    
-    var batchSize = 0
-    
-    typealias File = UnsafeMutablePointer<FILE>
-    
+            
     var trainDataFile: File
     var trainLabelFile: File
     var testDataFile: File
@@ -36,11 +32,6 @@ public class MNISTReader: ImageReader {
     
     var trainDataLoadIndex = 0
     var testDataLoadIndex = 0
-
-    public enum SetType {
-        case train
-        case test
-    }
     
     /**
      Set the path to MNIST dataset and batch size.
@@ -65,7 +56,6 @@ public class MNISTReader: ImageReader {
      ```
      */
     public init(root: String, batchSize: Int) {
-        self.batchSize = batchSize
         rootPath = root
         
         testLabelFile    = fopen(rootPath + "/t10k-labels-idx1-ubyte", "r")
@@ -74,6 +64,8 @@ public class MNISTReader: ImageReader {
         trainDataFile    = fopen(rootPath + "/train-images-idx3-ubyte", "r")
         
         super.init()
+        
+        self.batchSize = batchSize
         dataInit()
     }
     

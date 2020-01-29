@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="mnist_ios" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4rD-ra-XMC">
+                                <rect key="frame" x="189" y="44" width="36" height="30"/>
+                                <state key="normal" title="Clear"/>
+                                <connections>
+                                    <action selector="clear" destination="BYZ-38-t0r" eventType="touchUpInside" id="6lE-2s-qIU"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ol0-gx-HbJ" customClass="DrawView" customModule="mnist_ios" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="82" width="414" height="414"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Ol0-gx-HbJ" secondAttribute="height" id="r1W-yV-lgg"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H4P-z3-7Dp">
+                                <rect key="frame" x="0.0" y="504" width="414" height="358"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="98"/>
+                                <state key="normal" title="?"/>
+                                <connections>
+                                    <action selector="check" destination="BYZ-38-t0r" eventType="touchUpInside" id="3hF-Qj-zsk"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="Ol0-gx-HbJ" firstAttribute="top" secondItem="4rD-ra-XMC" secondAttribute="bottom" constant="8" id="HvX-kv-lgf"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="H4P-z3-7Dp" secondAttribute="bottom" id="KmP-E2-8ba"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="H4P-z3-7Dp" secondAttribute="trailing" id="OFv-Cn-oT9"/>
+                            <constraint firstItem="Ol0-gx-HbJ" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="Q8y-Er-wiQ"/>
+                            <constraint firstItem="H4P-z3-7Dp" firstAttribute="top" secondItem="Ol0-gx-HbJ" secondAttribute="bottom" constant="8" id="Vum-Xs-RhZ"/>
+                            <constraint firstItem="Ol0-gx-HbJ" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="b4p-9I-Dmw"/>
+                            <constraint firstItem="4rD-ra-XMC" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="fJ3-nJ-W45"/>
+                            <constraint firstItem="Ol0-gx-HbJ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="p8m-15-q7Q"/>
+                            <constraint firstItem="H4P-z3-7Dp" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="sLj-1g-uq6"/>
+                            <constraint firstItem="4rD-ra-XMC" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="shP-C5-Z9y"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="drawView" destination="Ol0-gx-HbJ" id="yKs-cC-0AB"/>
+                        <outlet property="resButton" destination="H4P-z3-7Dp" id="Z5F-Gx-Cqc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="137.68115942028987" y="109.82142857142857"/>
+        </scene>
+    </scenes>
+</document>

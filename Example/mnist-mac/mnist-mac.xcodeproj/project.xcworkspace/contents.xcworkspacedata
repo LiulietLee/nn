@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:nn.xcodeproj">
+      location = "self:mnist-mac.xcodeproj">
    </FileRef>
 </Workspace>
