@@ -13,7 +13,7 @@ Core.device = MTLCreateSystemDefaultDevice()
 
 let reader = MNISTReader(
     root: "/Users/liulietlee/Developer/tf/mnist",
-    batchSize: 16
+    batchSize: 64
 )
 
 let net = Sequential([
@@ -32,9 +32,9 @@ let net = Sequential([
 ])
 
 func train() {
-    ModelStorage.load(net, path: "mnistmodel01.nnm")
+//    ModelStorage.load(net, path: "mnistmodel01.nnm")
 
-    for i in 0..<10 {
+    for i in 0..<3 {
         var j = 0
         var runningLoss: Float = 0.0
         while let (img, label) = reader.nextTrain() {
@@ -45,7 +45,7 @@ func train() {
             net.step(lr: 0.0001, momentum: 0.99)
             runningLoss = max(runningLoss, loss)
             
-            if j % 10 == 9 {
+            if j % 100 == 99 {
                 print("[\(i), \(j)] loss: \(runningLoss)")
                 runningLoss = 0.0
                 ModelStorage.save(net, path: "mnistmodel01.nnm")
@@ -77,5 +77,5 @@ func test() {
     print("correct: \(cor) / \(tot)")
 }
 
-train()
-//test()
+//train()
+test()
