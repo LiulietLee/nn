@@ -77,8 +77,7 @@ public class Sequential: BaseContainer {
                 input = l.predict(input)
             }
         }
-        score = input
-        return score
+        return input
     }
     
     @discardableResult

@@ -99,7 +99,7 @@ public class Dense: BaseLayer {
             return
         }
                 
-        for batch in 0..<batchSize {
+        for batch in 0..<batch {
             for i in 0..<outFeatures {
                 for j in 0..<inFeatures {
                     inter[batch, i] += param[i, j] * input[batch, j]
