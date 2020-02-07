@@ -33,26 +33,27 @@ extension Conv {
 
 extension Conv {
     
-    func forwardWithMetal(_ input: NNArray) {
+    func forwardWithMetal(_ input: NNArray, _ output: NNArray, _ batch: Int) {
         let pipeline = Core.pipeline(by: "conv_forward")
         let queue = Core.queue()
         var info = ConvLayerInfo(self, input: input)
+        info.batchSize = Int32(batch)
                 
         let commandBuffer = queue.makeCommandBuffer()!
-        let w = min(batchSize, pipeline.threadExecutionWidth)
+        let w = min(batch, pipeline.threadExecutionWidth)
         let h = min(count, pipeline.maxTotalThreadsPerThreadgroup / w)
         let d = min(row * col, pipeline.maxTotalThreadsPerThreadgroup / w / h)
 
         var inputLength = input.count,
         coreLength = core.count,
         biasLength = bias.count,
-        scoreLength = score.count
+        scoreLength = output.count
         
         Core.encode(
             commandBuffer: commandBuffer,
             pipeline: pipeline,
-            buffers: Core.buffer(&info), Core.buffer(input), Core.buffer(core), Core.buffer(bias), Core.buffer(&inputLength), Core.buffer(&coreLength), Core.buffer(&biasLength), Core.buffer(&scoreLength), Core.buffer(score),
-            grid: [batchSize, count, row * col],
+            buffers: Core.buffer(&info), Core.buffer(input), Core.buffer(core), Core.buffer(bias), Core.buffer(&inputLength), Core.buffer(&coreLength), Core.buffer(&biasLength), Core.buffer(&scoreLength), Core.buffer(output),
+            grid: [batch, count, row * col],
             thread: [w, h, d]
         )
                 

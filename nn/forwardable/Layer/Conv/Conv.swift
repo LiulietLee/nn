@@ -93,12 +93,27 @@ public class Conv: BaseLayer {
         }
         score.data.zero()
         
+        forwardCompute(input: input, output: score, batch: batchSize)
+        
+        return score
+    }
+    
+    public override func predict(_ input: NNArray) -> NNArray {
+        let input: NNArray = input.copy()
+        let score = NNArray(input.d[0], count, row, col)
+
+        forwardCompute(input: input, output: score, batch: input.d[0])
+        
+        return score
+    }
+    
+    func forwardCompute(input: NNArray, output: NNArray, batch: Int) {
         if Core.device != nil {
-            forwardWithMetal(input)
-            return score
+            forwardWithMetal(input, output, batch)
+            return
         }
         
-        for batch in 0..<batchSize {
+        for batch in 0..<batch {
             for c in 0..<count {
                 for i in 0..<row {
                     for j in 0..<col {
@@ -107,20 +122,18 @@ public class Conv: BaseLayer {
                                 for z in 0..<depth {
                                     let rx = i * step + x - padding, ry = j * step + y - padding
                                     if inBound(rx, ry, input.d[2], input.d[3]) {
-                                        score[batch, c, i, j] += input[batch, z, rx, ry] * core[c, z, x, y]
+                                        output[batch, c, i, j] += input[batch, z, rx, ry] * core[c, z, x, y]
                                     }
                                 }
                             }
                         }
                         if needBias {
-                            score[batch, c, i, j] += bias[c]
+                            output[batch, c, i, j] += bias[c]
                         }
                     }
                 }
             }
         }
-        
-        return score
     }
 
     public override func backward(_ input: NNArray, delta: NNArray) -> NNArray {

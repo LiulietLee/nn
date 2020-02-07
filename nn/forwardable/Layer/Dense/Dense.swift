@@ -71,38 +71,55 @@ public class Dense: BaseLayer {
         
         let inputd = input.d
         input.dim([batchSize, inFeatures])
-
-        if Core.device != nil {
-            forwardWithMetal(input)
-            return score
-        }
-        
         interScore.data.zero()
+
+        forwardCompute(input: input, inter: interScore, output: score, batch: batchSize)
         
+        input.dim(inputd)
+        return score
+    }
+    
+    public override func predict(_ input: NNArray) -> NNArray {
+        let input: NNArray = input.copy()
+        let score = NNArray(input.d[0], outFeatures)
+        let inter = NNArray(input.d[0], outFeatures)
+
+        let inputd = input.d
+        input.dim([input.d[0], inFeatures])
+
+        forwardCompute(input: input, inter: inter, output: score, batch: input.d[0])
+        
+        input.dim(inputd)
+        return score
+    }
+    
+    func forwardCompute(input: NNArray, inter: NNArray, output: NNArray, batch: Int) {
+        if Core.device != nil {
+            forwardWithMetal(batch, input, inter, output)
+            return
+        }
+                
         for batch in 0..<batchSize {
             for i in 0..<outFeatures {
                 for j in 0..<inFeatures {
-                    interScore[batch, i] += param[i, j] * input[batch, j]
+                    inter[batch, i] += param[i, j] * input[batch, j]
                 }
             }
 
         
             for i in 0..<outFeatures {
-                score[batch, i] = interScore[batch, i]
-                if relu && interScore[batch, i] < 0.0 {
-                    score[batch, i] *= 0.001
+                output[batch, i] = inter[batch, i]
+                if relu && inter[batch, i] < 0.0 {
+                    output[batch, i] *= 0.001
                 }
             }
             
             if needBias {
                 for i in 0..<outFeatures {
-                    score[batch, i] += bias[i]
+                    output[batch, i] += bias[i]
                 }
             }
         }
-        
-        input.dim(inputd)
-        return score
     }
     
     public override func backward(_ input: NNArray, delta: NNArray) -> NNArray {
