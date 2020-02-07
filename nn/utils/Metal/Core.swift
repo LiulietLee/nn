@@ -26,12 +26,12 @@ public class Core {
     
     static var functionMap = [String: MTLFunction]()
     
-    static let mutex = DispatchSemaphore(value: 1)
+    static let mutex1 = DispatchSemaphore(value: 1)
     
     static func function(_ name: String) -> MTLFunction {
-        mutex.wait()
+        mutex1.wait()
         defer {
-            mutex.signal()
+            mutex1.signal()
         }
         if let function = functionMap[name] {
             return function
@@ -42,11 +42,23 @@ public class Core {
         }
     }
     
+    static let mutex2 = DispatchSemaphore(value: 1)
+
     static func pipeline(by functionName: String) -> MTLComputePipelineState {
+        mutex2.wait()
+        defer {
+            mutex2.signal()
+        }
         return try! device!.makeComputePipelineState(function: function(functionName))
     }
     
+    static let mutex3 = DispatchSemaphore(value: 1)
+
     static func queue() -> MTLCommandQueue {
+        mutex3.wait()
+        defer {
+            mutex3.signal()
+        }
         return device!.makeCommandQueue()!
     }
     

@@ -64,7 +64,7 @@ func test() {
     var cor = 0
     var tot = 0
     while let (img, label) = reader.nextTest() {
-        let score = net.forward(img)
+        let score = net.predict(img)
         let pred = score.indexOfMax()
         if pred == label {
             cor += 1
